@@ -7,6 +7,7 @@
 #' @param input_dim dimension of input layer, i.e. how many numbers to sum
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
+#' @param iterations number of training iterations
 #' @examples 
 #' # training dataset generation
 #' binary_dim = 8
@@ -21,7 +22,7 @@
 #' rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim)
 
 
-rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim) {
+rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {
   
   # check what largest possible number is
   largest_number = 2^binary_dim
@@ -36,7 +37,7 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim) {
   synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
   
   # training logic
-  for (j in 1:10000) {
+  for (j in 1:iterations) {
     
     # generate a simple addition problem (a + b = c)
     a_int = sample(1:(largest_number/2), 1) # int version
@@ -113,7 +114,7 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim) {
     synapse_h_update = synapse_h_update * 0
     
     # print out progress
-    if(j %% 1000 ==0) {
+    if(j %% 500 ==0) {
       print(paste("Error:", overallError))
       print(paste("Pred:", paste(d, collapse = " ")))
       print(paste("True:", paste(c, collapse = " ")))
