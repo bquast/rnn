@@ -2,7 +2,9 @@
 #' @export
 #' @title Integer 2 Binary
 #' @description Converts an integer to binary form.
+#' @param x integer
+#' @param length length of binary representation
 
 
-int2binary = function(x) {
-  tail(rev(as.integer(intToBits(x))), binary_dim) }
+int2binary = function(x, length) {
+  tail(rev(as.integer(intToBits(x))), length) }

@@ -4,7 +4,12 @@
 \alias{int2binary}
 \title{Integer 2 Binary}
 \usage{
-int2binary(x)
+int2binary(x, length)
+}
+\arguments{
+\item{x}{integer}
+
+\item{length}{length of binary representation}
 }
 \description{
 Converts an integer to binary form.

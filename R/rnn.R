@@ -40,14 +40,14 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim) {
     
     # generate a simple addition problem (a + b = c)
     a_int = sample(1:(largest_number/2), 1) # int version
-    a = int2binary(a_int) # binary encoding
+    a = int2binary(a_int, binary_dim) # binary encoding
     
     b_int = sample(1:(largest_number/2), 1) # int version
-    b = int2binary(b_int)
+    b = int2binary(b_int, binary_dim)
     
     # true answer
     c_int = a_int + b_int
-    c = int2binary(c_int)
+    c = int2binary(c_int, binary_dim)
     
     # where we'll store our best guesss (binary encoded)
     d = matrix(0, nrow = 1, ncol = binary_dim)
