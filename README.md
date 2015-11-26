@@ -33,15 +33,6 @@ help('rnn')
 help(package='rnn')
 ```
 
-For examples of usage, see the function specific help pages, in particular the `decomp()` function.
-
-```r
-help("decomp")
-help("leontief")
-help("wwz")
-help("load_tables_vectors")
-```
-
 
 Additional Information
 -----------------------
