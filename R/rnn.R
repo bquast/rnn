@@ -7,19 +7,14 @@
 #' @param input_dim dimension of input layer, i.e. how many numbers to sum
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
-#' @param iterations number of training iterations
+#' @param iterations number of training iterations, default is 10,000
 #' @examples 
-#' # training dataset generation
-#' binary_dim = 8
-#' 
-#' # input variables
-#' alpha = 0.1
-#' input_dim = 2
-#' hidden_dim = 16
-#' output_dim = 1
-#' 
-#' # run
-#' rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim)
+#' # using the default of 10,000 iterations
+#' rnn(binary_dim = 8,
+#'     alpha = 0.1,
+#'     input_dim = 2,
+#'     hidden_dim = 10,
+#'     output_dim = 1  )
 
 
 rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {

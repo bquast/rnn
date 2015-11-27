@@ -17,22 +17,17 @@ rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000)
 
 \item{output_dim}{dimension of output layer}
 
-\item{iterations}{number of training iterations}
+\item{iterations}{number of training iterations, default is 10,000}
 }
 \description{
 Trains a Recurrent Neural Network.
 }
 \examples{
-# training dataset generation
-binary_dim = 8
-
-# input variables
-alpha = 0.1
-input_dim = 2
-hidden_dim = 16
-output_dim = 1
-
-# run
-rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim)
+# using the default of 10,000 iterations
+rnn(binary_dim = 8,
+    alpha = 0.1,
+    input_dim = 2,
+    hidden_dim = 10,
+    output_dim = 1  )
 }
 
