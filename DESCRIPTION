@@ -1,6 +1,6 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre"))
 Description: Implementation of a Recurrent Neural Network in R.
 Depends: 
@@ -8,4 +8,7 @@ Depends:
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
