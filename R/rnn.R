@@ -69,7 +69,8 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
       
       # did we miss?... if so, by how much?
       layer_2_error = y - layer_2
-      layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid_output_to_derivative(layer_2))
+      layer_2_deltas = rbind(layer_2_deltas, layer_2_error * 
+                               sigmoid_output_to_derivative(layer_2))
       overallError = overallError + abs(layer_2_error)
       
       # decode estimate so we can print it out
