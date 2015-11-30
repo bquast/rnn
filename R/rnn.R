@@ -1,5 +1,6 @@
 #' @name rnn
 #' @export
+#' @importFrom stats runif
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param binary_dim dimension of binary representation
@@ -23,9 +24,9 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
   largest_number = 2^binary_dim
   
   # initialize neural network weights
-  synapse_0 = matrix(runif(n = input_dim*hidden_dim, min=-1, max=1), nrow=input_dim)
-  synapse_1 = matrix(runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
-  synapse_h = matrix(runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
+  synapse_0 = matrix(stats::runif(n = input_dim*hidden_dim, min=-1, max=1), nrow=input_dim)
+  synapse_1 = matrix(stats::runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
+  synapse_h = matrix(stats::runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
   
   synapse_0_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
   synapse_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)

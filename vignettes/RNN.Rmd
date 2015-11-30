@@ -66,6 +66,12 @@ sigmoid_output_to_derivative
 
 # Application
 
+By setting a **seed** for the random number generator, we ensure replicability.
+
+```{r seed}
+set.seed(123)
+```
+
 An example is included in the help file.
 
 ```{r help, eval=FALSE}
@@ -92,5 +98,5 @@ rnn(binary_dim = 8,
     input_dim  = 2,
     hidden_dim = 3,
     output_dim = 1,
-    iterations = 30000)
+    iterations = 20000)
 ```
