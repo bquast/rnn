@@ -112,6 +112,7 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
     
     # print out progress
     if(j %% 500 ==0) {
+      print(paste("Iteration:", j))
       print(paste("Error:", overallError))
       print(paste("Pred:", paste(d, collapse = " ")))
       print(paste("True:", paste(c, collapse = " ")))
