@@ -10,11 +10,11 @@
 #' @param iterations number of training iterations, default is 10,000
 #' @examples 
 #' # using the default of 10,000 iterations
-#' rnn(binary_dim = 8,
-#'     alpha = 0.1,
-#'     input_dim = 2,
+#' rnn(binary_dim =  8,
+#'     alpha      =  0.1,
+#'     input_dim  =  2,
 #'     hidden_dim = 10,
-#'     output_dim = 1  )
+#'     output_dim =  1  )
 
 
 rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {
@@ -69,8 +69,7 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
       
       # did we miss?... if so, by how much?
       layer_2_error = y - layer_2
-      layer_2_deltas = rbind(layer_2_deltas, layer_2_error * 
-                               sigmoid_output_to_derivative(layer_2))
+      layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid_output_to_derivative(layer_2))
       overallError = overallError + abs(layer_2_error)
       
       # decode estimate so we can print it out
@@ -91,7 +90,8 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
       # error at output layer
       layer_2_delta = layer_2_deltas[dim(layer_2_deltas)[1]-position,]
       # error at hidden layer
-      layer_1_delta = (future_layer_1_delta %*% t(synapse_h) + layer_2_delta %*% t(synapse_1)) * sigmoid_output_to_derivative(layer_1)
+      layer_1_delta = (future_layer_1_delta %*% t(synapse_h) + layer_2_delta %*% t(synapse_1)) *
+        sigmoid_output_to_derivative(layer_1)
       
       # let's update all our weights so we can try again
       synapse_1_update = synapse_1_update + matrix(layer_1) %*% layer_2_delta

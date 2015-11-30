@@ -24,10 +24,10 @@ Trains a Recurrent Neural Network.
 }
 \examples{
 # using the default of 10,000 iterations
-rnn(binary_dim = 8,
-    alpha = 0.1,
-    input_dim = 2,
+rnn(binary_dim =  8,
+    alpha      =  0.1,
+    input_dim  =  2,
     hidden_dim = 10,
-    output_dim = 1  )
+    output_dim =  1  )
 }
 
