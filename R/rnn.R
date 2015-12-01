@@ -9,16 +9,17 @@
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
 #' @param iterations number of training iterations, default is 10,000
+#' @param silent should train progress be printed
 #' @examples 
 #' # using the default of 10,000 iterations
 #' rnn(binary_dim =  8,
 #'     alpha      =  0.1,
 #'     input_dim  =  2,
 #'     hidden_dim = 10,
-#'     output_dim =  1  )
+#'     output_dim =  1)
 
 
-rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {
+rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000, silent = FALSE) {
   
   # check what largest possible number is
   largest_number = 2^binary_dim
@@ -111,16 +112,18 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
     synapse_h_update = synapse_h_update * 0
     
     # print out progress
-    if(j %% 500 ==0) {
-      print(paste("Iteration:", j))
-      print(paste("Error:", overallError))
-      print(paste("Pred:", paste(d, collapse = " ")))
-      print(paste("True:", paste(c, collapse = " ")))
+    if(!silent && j %% 500 ==0) {
+      print(paste('Iteration:', j))
+      print(paste('Error:', overallError))
+      print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
+      print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+      print('-----------------------------')
+      print(paste('Y: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
       out = 0
       for (x in 1:length(d)) {
         out[x] = rev(d)[x]*2^(x-1) }
-      print(paste(a_int, "+", b_int, "=", sum(out)))
-      print("----------------")                     
+      print(paste('Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
+      print('=============================')
     }             
   }
 }

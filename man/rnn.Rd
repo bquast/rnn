@@ -4,7 +4,8 @@
 \alias{rnn}
 \title{Recurrent Neural Network}
 \usage{
-rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000)
+rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000,
+  silent = FALSE)
 }
 \arguments{
 \item{binary_dim}{dimension of binary representation}
@@ -18,6 +19,8 @@ rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000)
 \item{output_dim}{dimension of output layer}
 
 \item{iterations}{number of training iterations, default is 10,000}
+
+\item{silent}{should train progress be printed}
 }
 \description{
 Trains a Recurrent Neural Network.
@@ -28,6 +31,6 @@ rnn(binary_dim =  8,
     alpha      =  0.1,
     input_dim  =  2,
     hidden_dim = 10,
-    output_dim =  1  )
+    output_dim =  1)
 }
 
