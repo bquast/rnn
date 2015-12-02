@@ -4,10 +4,16 @@
 \alias{rnn}
 \title{Recurrent Neural Network}
 \usage{
-rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000,
+rnn(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
   silent = FALSE)
 }
 \arguments{
+\item{Y}{vector of output values}
+
+\item{X1}{vector of input values}
+
+\item{X2}{vector of input values}
+
 \item{binary_dim}{dimension of binary representation}
 
 \item{alpha}{size of alpha}
@@ -18,16 +24,24 @@ rnn(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations = 5000,
 
 \item{output_dim}{dimension of output layer}
 
-\item{iterations}{number of training iterations, default is 10,000}
-
 \item{silent}{should train progress be printed}
 }
 \description{
 Trains a Recurrent Neural Network.
 }
 \examples{
-# using the default of 10,000 iterations
-rnn(binary_dim =  8,
+# create training inputs
+X1 = sample(0:127, 7000, replace=TRUE)
+X2 = sample(0:127, 7000, replace=TRUE)
+
+# create training output
+Y <- X1 + X2
+
+# run the 
+rnn(Y,
+    X1,
+    X2,
+    binary_dim =  8,
     alpha      =  0.1,
     input_dim  =  2,
     hidden_dim = 10,

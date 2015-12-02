@@ -39,6 +39,12 @@ help('rnn')
 help(package='rnn')
 ```
 
+There is also a long form [vignette](https://cran.r-project.org/web/packages/rnn/vignettes/RNN.html) available using:
+
+```r
+vignette('RNN')
+```
+
 
 Additional Information
 -----------------------

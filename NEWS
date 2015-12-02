@@ -1,4 +1,9 @@
+rnn 0.2.0
+===================
+
+* generalised to use user training data instead of generated
+
 rnn 0.1.0
-===============
+===================
 
 * initial release
