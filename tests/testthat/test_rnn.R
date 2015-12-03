@@ -1,14 +1,14 @@
 # create training inputs
-x1 = sample(0:127, 7000, replace=TRUE)
-x2 = sample(0:127, 7000, replace=TRUE)
+X1 = sample(0:127, 7000, replace=TRUE)
+X2 = sample(0:127, 7000, replace=TRUE)
 
 # create training output
-y <- x1 + x2
+Y <- X1 + X2
 
 # run the 
-rnn(y,
-    x1,
-    x2,
+rnn(Y,
+    X1,
+    X2,
     binary_dim =  8,
     alpha      =  0.1,
     input_dim  =  2,
