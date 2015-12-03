@@ -1,3 +1,6 @@
+# replicable
+set.seed(123)
+
 # create training inputs
 X1 = sample(0:127, 7000, replace=TRUE)
 X2 = sample(0:127, 7000, replace=TRUE)
