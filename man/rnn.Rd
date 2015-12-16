@@ -45,6 +45,8 @@ rnn(Y,
     alpha      =  0.1,
     input_dim  =  2,
     hidden_dim = 10,
-    output_dim =  1)
+    output_dim =  1,
+    silent = FALSE)
+    
 }
 

@@ -1,3 +1,9 @@
+rnn 0.3.0
+===================
+
+* modified print method, highlights the column-by-column input method
+
+
 rnn 0.2.0
 ===================
 

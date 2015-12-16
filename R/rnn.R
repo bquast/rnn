@@ -28,7 +28,9 @@
 #'     alpha      =  0.1,
 #'     input_dim  =  2,
 #'     hidden_dim = 10,
-#'     output_dim =  1)
+#'     output_dim =  1,
+#'     silent = FALSE)
+#'     
 
 
 rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, silent = FALSE) {
@@ -47,6 +49,10 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
   
   # training logic
   for (j in 1:length(Y)) {
+    
+    if(!silent && j %% 1000 == 0) {
+      print(paste('Iteration:', j))
+    }
     
     # generate a simple addition problem (a + b = c)
     a_int = X1[j] # int version
@@ -91,6 +97,15 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
       
       # store hidden layer so we can print it out
       layer_1_values = rbind(layer_1_values, layer_1)
+      
+      if(!silent && j %% 1000 == 0) {
+        print(paste('x1:', a[binary_dim - position]))
+        print(paste('x2:', b[binary_dim - position], '+'))
+        print('-------')
+        print(paste('y: ', c[binary_dim - position]))
+        print(paste('y^:', d[binary_dim - position]))
+        print('=======')
+      }
     }
     
     future_layer_1_delta = matrix(0, nrow = 1, ncol = hidden_dim)
@@ -124,8 +139,7 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
     synapse_h_update = synapse_h_update * 0
     
     # print out progress
-    if(!silent && j %% 500 ==0) {
-      print(paste('Iteration:', j))
+    if(!silent && j %% 1000 == 0) {
       print(paste('Error:', overallError))
       print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
       print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
