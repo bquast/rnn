@@ -1,6 +1,6 @@
 ## Test environments
-* local OS X install, R 3.2.3
-* ubuntu 12.04 (on Travis-CI), R 3.2.3
+* local OS X install, R 3.2.4
+* ubuntu 12.04 (on Travis-CI), R 3.2.4
 * win-builder (devel and release)
 
 ## R CMD check results
