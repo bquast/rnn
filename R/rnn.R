@@ -11,7 +11,7 @@
 #' @param input_dim dimension of input layer, i.e. how many numbers to sum
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
-#' @param silent should train progress be printed
+#' @param print should train progress be printed
 #' @examples 
 #' # create training inputs
 #' X1 = sample(0:127, 7000, replace=TRUE)
@@ -29,11 +29,11 @@
 #'     input_dim  =  2,
 #'     hidden_dim = 10,
 #'     output_dim =  1,
-#'     silent = FALSE)
+#'     print = 'full')
 #'     
 
 
-rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, silent = FALSE) {
+rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, print = c('full', 'minimal', 'none')) {
   
   # check what largest possible number is
   largest_number = 2^binary_dim
@@ -50,7 +50,7 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
   # training logic
   for (j in 1:length(Y)) {
     
-    if(!silent && j %% 1000 == 0) {
+    if(print != 'none' && j %% 1000 == 0) {
       print(paste('Summation number:', j))
     }
     
@@ -98,7 +98,7 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
       # store hidden layer so we can print it out
       layer_1_values = rbind(layer_1_values, layer_1)
       
-      if(!silent && j %% 1000 == 0) {
+      if(print == 'full' && j %% 1000 == 0) {
         print(paste('x1:', a[binary_dim - position]))
         print(paste('x2:', b[binary_dim - position], '+'))
         print('-------')
@@ -139,7 +139,7 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
     synapse_h_update = synapse_h_update * 0
     
     # print out progress
-    if(!silent && j %% 1000 == 0) {
+    if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
       print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
       print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))

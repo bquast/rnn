@@ -5,7 +5,7 @@
 \title{Recurrent Neural Network}
 \usage{
 rnn(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
-  silent = FALSE)
+  print = c("full", "minimal", "none"))
 }
 \arguments{
 \item{Y}{vector of output values}
@@ -24,7 +24,7 @@ rnn(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
 
 \item{output_dim}{dimension of output layer}
 
-\item{silent}{should train progress be printed}
+\item{print}{should train progress be printed}
 }
 \description{
 Trains a Recurrent Neural Network.
@@ -46,7 +46,7 @@ rnn(Y,
     input_dim  =  2,
     hidden_dim = 10,
     output_dim =  1,
-    silent = FALSE)
+    print = 'full')
     
 }
 
