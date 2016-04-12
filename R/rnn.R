@@ -51,7 +51,7 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
   for (j in 1:length(Y)) {
     
     if(!silent && j %% 1000 == 0) {
-      print(paste('Iteration:', j))
+      print(paste('Summation number:', j))
     }
     
     # generate a simple addition problem (a + b = c)
