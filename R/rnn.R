@@ -141,14 +141,14 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
-      print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
-      print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
+      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
       print('-----------------------------')
-      print(paste('Y: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
+      print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
       out = 0
       for (x in 1:length(d)) {
         out[x] = rev(d)[x]*2^(x-1) }
-      print(paste('Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
+      print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
       print('=============================')
     }             
   }
