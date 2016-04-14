@@ -35,14 +35,15 @@ library(rnn)
 For general information on using the package, please refer to the help files.
 
 ```r
-help('rnn')
+help('trainr')
+help('predictr')
 help(package='rnn')
 ```
 
 There is also a long form [vignette](https://cran.r-project.org/web/packages/rnn/vignettes/rnn.html) available using:
 
 ```r
-vignette('RNN')
+vignette('rnn')
 ```
 
 
