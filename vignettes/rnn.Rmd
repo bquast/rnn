@@ -20,10 +20,10 @@ library(rnn)
 
 # Code
 
-We can view the code of the main `rnn()` function by calling it without the parathesis.
+We can view the code of the main `rnn()` function by calling it without the parathesis (not printed here).
 
-```{r code-rnn}
-rnn
+```{r code-rnn, eval=FALSE}
+trainr
 ```
 
 As can be seen from the above, the model relies on two other functions that are included with the package.
@@ -57,13 +57,13 @@ sigmoid_output_to_derivative
 By setting a **seed** for the random number generator, we ensure replicability.
 
 ```{r seed}
-set.seed(123)
+set.seed(1)
 ```
 
 An example is included in the help file.
 
 ```{r help, eval=FALSE}
-help('rnn')
+help('trainr')
 ```
 
 First we generate the data:
@@ -80,17 +80,47 @@ Y <- X1 + X2
 This example is:
 
 ```{r example}
-rnn(Y,
-    X1,
-    X2,
-    binary_dim =  8,
-    alpha      =  0.1,
-    input_dim  =  2,
-    hidden_dim = 10,
-    output_dim =  1)
+# train the model
+m1 <- trainr(Y,
+             X1,
+             X2,
+             binary_dim =  8,
+             alpha      =  0.1,
+             input_dim  =  2,
+             hidden_dim = 10,
+             output_dim =  1   )
 ```
 
-It is interesting to vary the number of hidden units and iterations.
+Now create testing data
+
+```{r test-data}
+# create test inputs
+A1 = sample(0:127, 7000, replace=TRUE)
+A2 = sample(0:127, 7000, replace=TRUE)
+```
+
+Predict based on testing data.
+
+```{r predictr}
+B  <- predictr(m1,
+               A1,
+               A2,
+               binary_dim =  8,
+               alpha      =  0.1,
+               input_dim  =  2,
+               hidden_dim = 10,
+               output_dim =  1   )
+```
+
+Test prediction against true values
+
+```{r test}
+hist(B-(A1+A2))
+```
+
+## hyperparameters
+
+It is also interesting to vary the number of hidden units and iterations.
 
 ```{r example-2}
 # create sample inputs
@@ -100,12 +130,13 @@ X2 = sample(0:127, 20000, replace=TRUE)
 # create sample output
 Y <- X1 + X2
 
-rnn(Y,
-    X1,
-    X2,
-    binary_dim = 8,
-    alpha      = 0.1,
-    input_dim  = 2,
-    hidden_dim = 3,
-    output_dim = 1)
+# train the model
+m2 <- trainr(Y,
+             X1,
+             X2,
+             binary_dim =  8,
+             alpha      =  0.1,
+             input_dim  =  2,
+             hidden_dim =  3,
+             output_dim =  1   )
 ```

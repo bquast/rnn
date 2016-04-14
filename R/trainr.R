@@ -1,4 +1,4 @@
-#' @name rnn
+#' @name trainr
 #' @export
 #' @importFrom stats runif
 #' @title Recurrent Neural Network
@@ -12,6 +12,7 @@
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
 #' @param print should train progress be printed
+#' @return a model to be used by the predictr function
 #' @examples 
 #' # create training inputs
 #' X1 = sample(0:127, 7000, replace=TRUE)
@@ -20,20 +21,20 @@
 #' # create training output
 #' Y <- X1 + X2
 #' 
-#' # run the 
-#' rnn(Y,
-#'     X1,
-#'     X2,
-#'     binary_dim =  8,
-#'     alpha      =  0.1,
-#'     input_dim  =  2,
-#'     hidden_dim = 10,
-#'     output_dim =  1,
-#'     print = 'full')
+#' # train the model
+#' trainr(Y,
+#'        X1,
+#'        X2,
+#'        binary_dim =  8,
+#'        alpha      =  0.1,
+#'        input_dim  =  2,
+#'        hidden_dim = 10,
+#'        output_dim =  1,
+#'        print = 'full'    )
 #'     
 
 
-rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, print = c('full', 'minimal', 'none')) {
+trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, print = c('none', 'minimal', 'full')) {
   
   # check what largest possible number is
   largest_number = 2^binary_dim
@@ -147,8 +148,12 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
       print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
       # convert d to decimal
       out = packBits(as.raw(rev(c(rep(0, 32-binary_dim), d))), 'integer')
-      print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
+      print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
       print('=============================')
     }             
   }
+  
+  # output object with synapses
+  return(list(synapse_0 = synapse_0, synapse_1 = synapse_1, synapse_h = synapse_h))
+  
 }

@@ -1,3 +1,15 @@
+rnn 0.5.0
+===================
+
+* rename rnn to trainr
+
+* trainr outputs model
+
+* add predictr function to use trainr model
+
+* defaults to no printing
+
+
 rnn 0.3.0
 ===================
 
