@@ -26,21 +26,9 @@ We can view the code of the main `rnn()` function by calling it without the para
 rnn
 ```
 
-As can be seen from the above, the model relies on three other functions that are included with the package.
+As can be seen from the above, the model relies on two other functions that are included with the package.
 
-The first one is `int2binary`, which stands for **integer to binary**, and converts an integer number to its binary representation:
-
-```{r int2binary}
-int2binary(146, length=8)
-```
-
-The code for this function is:
-
-```{r int2binary-code}
-int2binary
-```
-
-The second function is `sigmoid()`, which converts an integer to its sigmoid value.
+The first function is `sigmoid()`, which converts an integer to its sigmoid value.
 
 ```{r sigmoid}
 (a <- sigmoid(3))
@@ -52,7 +40,7 @@ The code for the `sigmoid()` function is:
 sigmoid
 ```
 
-The final function converts the sigmoid value of a number to its derivative.
+The second function converts the sigmoid value of a number to its derivative.
 
 ```{r sigmoid-der}
 sigmoid_output_to_derivative(a) # a was created above using sigmoid()
