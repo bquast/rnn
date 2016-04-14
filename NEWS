@@ -1,6 +1,14 @@
 rnn 0.3.0
 ===================
 
+* switch to internal methods for binary representation
+
+* add choice of print methods
+
+
+rnn 0.3.0
+===================
+
 * modified print method, highlights the column-by-column input method
 
 
