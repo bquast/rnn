@@ -56,14 +56,17 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
     
     # generate a simple addition problem (a + b = c)
     a_int = X1[j] # int version
-    a = int2binary(a_int, binary_dim) # binary encoding
+    # a = int2binary(a_int, binary_dim) # binary encoding
+    a = rev(as.numeric(intToBits(a_int))[1:binary_dim])
     
     b_int = X2[j] # int version
-    b = int2binary(b_int, binary_dim)
+    # b = int2binary(b_int, binary_dim)
+    b = rev(as.numeric(intToBits(b_int))[1:binary_dim])
     
     # true answer
     c_int = Y[j]
-    c = int2binary(c_int, binary_dim)
+    # c = int2binary(c_int, binary_dim)
+    c = rev(as.numeric(intToBits(c_int))[1:binary_dim])
     
     # where we'll store our best guesss (binary encoded)
     d = matrix(0, nrow = 1, ncol = binary_dim)
@@ -145,9 +148,10 @@ rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
       print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
       print('-----------------------------')
       print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
-      out = 0
-      for (x in 1:length(d)) {
-        out[x] = rev(d)[x]*2^(x-1) }
+      # out = 0
+      # for (x in 1:length(d)) {
+      #   out[x] = rev(d)[x]*2^(x-1) }
+      out = packBits(as.raw(rev(c(rep(0, 32-binary_dim), d))), 'integer')
       print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
       print('=============================')
     }             
