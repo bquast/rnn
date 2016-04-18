@@ -128,26 +128,3 @@ B  <- bin2int(B)
 # plot the difference
 hist(B-(A1+A2))
 ```
-
-## hyperparameters
-
-It is also interesting to vary the number of hidden units and iterations.
-
-```{r example-2}
-# create sample inputs
-X1 = sample(0:127, 20000, replace=TRUE)
-X2 = sample(0:127, 20000, replace=TRUE)
-
-# create sample output
-Y <- X1 + X2
-
-# train the model
-m2 <- trainr(Y,
-             X1,
-             X2,
-             binary_dim =  8,
-             alpha      =  0.1,
-             input_dim  =  2,
-             hidden_dim =  3,
-             output_dim =  1   )
-```
