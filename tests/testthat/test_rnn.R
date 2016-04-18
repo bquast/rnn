@@ -24,8 +24,8 @@ m1 <- trainr(Y,
              output_dim =  1   )
 
 # create test inputs
-A1 = sample(0:127, 7000, replace=TRUE)
-A2 = sample(0:127, 7000, replace=TRUE)
+A1 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
+A2 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
 
 # predict
 B  <- predictr(m1,
@@ -38,4 +38,4 @@ B  <- predictr(m1,
                output_dim =  1   )
 
 # inspect the differences              
-expect_equal(sum(B), 927640)
+expect_equal(sum(bin2int(B)), 927640)
