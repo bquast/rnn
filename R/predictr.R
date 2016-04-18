@@ -77,10 +77,10 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
     
     # generate a simple addition problem (a + b = c)
     a_int = X1[j] # int version
-    a = rev(as.numeric(intToBits(a_int))[1:binary_dim])
+    a = int2bin(a_int, binary_dim)
     
     b_int = X2[j] # int version
-    b = rev(as.numeric(intToBits(b_int))[1:binary_dim])
+    b = int2bin(b_int, binary_dim)
     
     # where we'll store our best guesss (binary encoded)
     d = matrix(0, nrow = 1, ncol = binary_dim)
