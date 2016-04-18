@@ -10,7 +10,7 @@ int2bin <- function(integer, length) {
 }
 
 
-#' @export
+#' @describeIn int2bin individual Integer to Binary
 
 i2b <- function(integer, length){
   rev(as.numeric(intToBits(integer))[1:length])

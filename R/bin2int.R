@@ -13,8 +13,7 @@ bin2int <- function(binary){
   apply(binary, 1, b2i)
 }
 
-
-#' @export
+#' @describeIn bin2int individual Binary to Integer
 
 b2i <- function(binary)
   packBits(as.raw(rev(c(rep(0, 32-length(binary) ), binary))), 'integer')
