@@ -1,7 +1,7 @@
 #' Integer to Binary
 #' 
 #' @param integer input integer
-#' @param output binary representation length
+#' @param length binary representation length
 #' @return binary representation
 #' @export
 

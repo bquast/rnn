@@ -9,7 +9,7 @@ int2bin(integer, length)
 \arguments{
 \item{integer}{input integer}
 
-\item{output}{binary representation length}
+\item{length}{binary representation length}
 }
 \value{
 binary representation
