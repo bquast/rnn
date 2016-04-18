@@ -75,6 +75,11 @@ X2 = sample(0:127, 5000, replace=TRUE)
 
 # create sample output
 Y <- X1 + X2
+
+# convert to binary
+X1 <- int2bin(X1, length=8)
+X2 <- int2bin(X2, length=8)
+Y  <- int2bin(Y,  length=8)
 ```
 
 This example is:
@@ -95,8 +100,8 @@ Now create testing data
 
 ```{r test-data}
 # create test inputs
-A1 = sample(0:127, 7000, replace=TRUE)
-A2 = sample(0:127, 7000, replace=TRUE)
+A1 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
+A2 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
 ```
 
 Predict based on testing data.
@@ -115,6 +120,12 @@ B  <- predictr(m1,
 Test prediction against true values
 
 ```{r test}
+# convert back to integers
+A1 <- bin2int(A1)
+A2 <- bin2int(A2)
+B  <- bin2int(B)
+
+# plot the difference
 hist(B-(A1+A2))
 ```
 
