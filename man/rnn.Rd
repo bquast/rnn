@@ -10,7 +10,7 @@ A Recurrent Neural Network in native R, transforms numbers to binaries before ad
 Bastiaan Quast \email{bquast@gmail.com}
 }
 \references{
-{}
+{http://qua.st/rnn}
 }
 \seealso{
 \code{\link{trainr}} for training a model and \code{\link{predictr}} for using a model to make predictions. http://qua.st/rnn
