@@ -119,24 +119,14 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
     }
     
     # output to decimal
-    out = packBits(as.raw(rev(c(rep(0, 32-binary_dim), d))), 'integer')
-    
-    # synapse_0 = synapse_0 + ( synapse_0_update * alpha )
-    # synapse_1 = synapse_1 + ( synapse_1_update * alpha )
-    # synapse_h = synapse_h + ( synapse_h_update * alpha )
-    # 
-    # synapse_0_update = synapse_0_update * 0
-    # synapse_1_update = synapse_1_update * 0
-    # synapse_h_update = synapse_h_update * 0
-    # 
+    out = bin2int(d)
+
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
       print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
       print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
       print('-----------------------------')
-      # convert d to decimal
-      
       print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
       print('=============================')
     }

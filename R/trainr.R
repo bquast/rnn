@@ -139,6 +139,9 @@ trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_d
     synapse_1_update = synapse_1_update * 0
     synapse_h_update = synapse_h_update * 0
     
+    # convert d to decimal
+    out = bin2int(d)
+    
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
@@ -146,8 +149,6 @@ trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_d
       print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
       print('-----------------------------')
       print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
-      # convert d to decimal
-      out = packBits(as.raw(rev(c(rep(0, 32-binary_dim), d))), 'integer')
       print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
       print('=============================')
     }             
