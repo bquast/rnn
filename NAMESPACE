@@ -2,6 +2,7 @@
 
 export(b2i)
 export(bin2int)
+export(i2b)
 export(int2bin)
 export(predictr)
 export(sigmoid)
