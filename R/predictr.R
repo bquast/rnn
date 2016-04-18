@@ -66,15 +66,10 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
   # create output vector
   Y <- matrix(nrow = dim(X1)[1], ncol = binary_dim)
 
-  
   # load neural network weights
   synapse_0 = model$synapse_0
   synapse_1 = model$synapse_1
   synapse_h = model$synapse_h
-  
-  # synapse_0_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
-  # synapse_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
-  # synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
   
   # training logic
   for (j in 1:dim(X1)[1]) {
