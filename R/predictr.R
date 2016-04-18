@@ -32,8 +32,8 @@
 #'              output_dim =  1   )
 #'              
 #' # create test inputs
-#' A1 = sample(0:127, 7000, replace=TRUE)
-#' A2 = sample(0:127, 7000, replace=TRUE)
+#' A1 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
+#' A2 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
 #'     
 #' # predict
 #' B  <- predictr(m1,
@@ -45,8 +45,16 @@
 #'                hidden_dim = 10,
 #'                output_dim =  1   )
 #'  
+#' # convert back to integers
+#' A1 <- bin2int(A1)
+#' A2 <- bin2int(A2)
+#' B  <- bin2int(B)
+#'  
 #' # inspect the differences              
 #' table( B-(A1+A2) )
+#' 
+#' # plot the difference
+#' hist( B-(A1+A2) )
 #' 
 
 
@@ -56,7 +64,7 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
   largest_number = 2^binary_dim
   
   # create output vector
-  Y <- matrix(nrow = length(X1), ncol = binary_dim)
+  Y <- matrix(nrow = dim(X1)[1], ncol = binary_dim)
 
   
   # load neural network weights
@@ -69,18 +77,15 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
   # synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
   
   # training logic
-  for (j in 1:length(X1)) {
+  for (j in 1:dim(X1)[1]) {
     
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Summation number:', j))
     }
     
     # generate a simple addition problem (a + b = c)
-    a_int = X1[j] # int version
-    a = int2bin(a_int, binary_dim)
-    
-    b_int = X2[j] # int version
-    b = int2bin(b_int, binary_dim)
+    a = X1[j,]
+    b = X2[j,]
     
     # where we'll store our best guesss (binary encoded)
     d = matrix(0, nrow = 1, ncol = binary_dim)
@@ -119,13 +124,13 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
     }
     
     # output to decimal
-    out = b2i(d)
+    out = b2i(as.vector(d))
 
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
-      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
-      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', b2i(a), ')'))
+      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b2i(b), ')'))
       print('-----------------------------')
       print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
       print('=============================')

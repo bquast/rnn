@@ -51,8 +51,8 @@ m1 <- trainr(Y,
              output_dim =  1   )
              
 # create test inputs
-A1 = sample(0:127, 7000, replace=TRUE)
-A2 = sample(0:127, 7000, replace=TRUE)
+A1 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
+A2 = int2bin(sample(0:127, 7000, replace=TRUE), length=8)
     
 # predict
 B  <- predictr(m1,
@@ -64,8 +64,16 @@ B  <- predictr(m1,
                hidden_dim = 10,
                output_dim =  1   )
  
+# convert back to integers
+A1 <- bin2int(A1)
+A2 <- bin2int(A2)
+B  <- bin2int(B)
+ 
 # inspect the differences              
 table( B-(A1+A2) )
+
+# plot the difference
+hist( B-(A1+A2) )
 
 }
 
