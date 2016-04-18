@@ -10,7 +10,7 @@ bin2int(binary)
 \item{binary}{input binary}
 }
 \value{
-binary representation
+integer representation
 }
 \description{
 Binary to Integer

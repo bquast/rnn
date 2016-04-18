@@ -56,7 +56,7 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
   largest_number = 2^binary_dim
   
   # create output vector
-  Y <- vector(mode = 'integer', length = length(X1))
+  Y <- matrix(nrow = length(X1), ncol = binary_dim)
 
   
   # load neural network weights
@@ -119,7 +119,7 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
     }
     
     # output to decimal
-    out = bin2int(d)
+    out = b2i(d)
 
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
@@ -132,7 +132,7 @@ predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, ou
     }
     
     # store value
-    Y[j] <- out
+    Y[j,] <- d
   }
   
   # return output vector

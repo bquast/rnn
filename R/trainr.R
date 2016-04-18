@@ -140,7 +140,7 @@ trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_d
     synapse_h_update = synapse_h_update * 0
     
     # convert d to decimal
-    out = bin2int(d)
+    out = b2i(d)
     
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
