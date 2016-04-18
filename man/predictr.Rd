@@ -33,12 +33,17 @@ vector of predicted values
 Trains a Recurrent Neural Network.
 }
 \examples{
-# create training inputs
+# create training numbers
 X1 = sample(0:127, 7000, replace=TRUE)
 X2 = sample(0:127, 7000, replace=TRUE)
 
-# create training output
+# create training response numbers
 Y <- X1 + X2
+
+# convert to binary
+X1 <- int2bin(X1, length=8)
+X2 <- int2bin(X2, length=8)
+Y  <- int2bin(Y,  length=8)
 
 # train the model
 m1 <- trainr(Y,

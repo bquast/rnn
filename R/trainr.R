@@ -14,12 +14,17 @@
 #' @param print should train progress be printed
 #' @return a model to be used by the predictr function
 #' @examples 
-#' # create training inputs
+#' # create training numbers
 #' X1 = sample(0:127, 7000, replace=TRUE)
 #' X2 = sample(0:127, 7000, replace=TRUE)
 #' 
-#' # create training output
+#' # create training response numbers
 #' Y <- X1 + X2
+#' 
+#' # convert to binary
+#' X1 <- int2bin(X1, length=8)
+#' X2 <- int2bin(X2, length=8)
+#' Y  <- int2bin(Y,  length=8)
 #' 
 #' # train the model
 #' trainr(Y,
@@ -49,22 +54,18 @@ trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_d
   synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
   
   # training logic
-  for (j in 1:length(Y)) {
+  for (j in 1:dim(Y)[1]) {
     
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Summation number:', j))
     }
     
     # generate a simple addition problem (a + b = c)
-    a_int = X1[j] # int version
-    a = int2bin(a_int, binary_dim)
-    
-    b_int = X2[j] # int version
-    b = int2bin(b_int, binary_dim)
+    a = X1[j,]
+    b = X2[j,]
     
     # true answer
-    c_int = Y[j]
-    c = int2bin(c_int, binary_dim)
+    c = Y[j,]
     
     # where we'll store our best guesss (binary encoded)
     d = matrix(0, nrow = 1, ncol = binary_dim)
@@ -140,15 +141,15 @@ trainr <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_d
     synapse_h_update = synapse_h_update * 0
     
     # convert d to decimal
-    out = b2i(d)
+    out = b2i(as.vector(d))
     
     # print out progress
     if(print != 'none' && j %% 1000 == 0) {
       print(paste('Error:', overallError))
-      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
-      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', b2i(a), ')'))
+      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b2i(b), ')'))
       print('-----------------------------')
-      print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
+      print(paste('Y[', j, ']: ', paste(c, collapse = ' '), ' ', '(', b2i(c), ')'))
       print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
       print('=============================')
     }             
