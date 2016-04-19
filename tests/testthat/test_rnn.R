@@ -21,7 +21,8 @@ m1 <- trainr(Y,
              alpha      =  0.1,
              input_dim  =  2,
              hidden_dim = 10,
-             output_dim =  1   )
+             output_dim =  1,
+             print      = 'full')
 
 # create test inputs
 A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
@@ -35,7 +36,8 @@ B  <- predictr(m1,
                alpha      =  0.1,
                input_dim  =  2,
                hidden_dim = 10,
-               output_dim =  1   )
+               output_dim =  1,
+               print      = 'full')
 
 # inspect the differences              
 expect_equal(sum(bin2int(B)), 927640)
