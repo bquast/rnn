@@ -5,14 +5,14 @@
 #' @return binary representation
 #' @export
 
-int2bin <- function(integer, length) {
+int2bin <- function(integer, length=8) {
   t(sapply(integer, i2b, length=length))
 }
 
 
 #' @describeIn int2bin individual Integer to Binary
 
-i2b <- function(integer, length){
+i2b <- function(integer, length=8){
   rev(as.numeric(intToBits(integer))[1:length])
 }
 

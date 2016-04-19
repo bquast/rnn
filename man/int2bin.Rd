@@ -5,9 +5,9 @@
 \alias{int2bin}
 \title{Integer to Binary}
 \usage{
-int2bin(integer, length)
+int2bin(integer, length = 8)
 
-i2b(integer, length)
+i2b(integer, length = 8)
 }
 \arguments{
 \item{integer}{input integer}

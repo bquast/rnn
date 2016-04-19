@@ -41,9 +41,9 @@ X2 = sample(0:127, 7000, replace=TRUE)
 Y <- X1 + X2
 
 # convert to binary
-X1 <- int2bin(X1, length=8)
-X2 <- int2bin(X2, length=8)
-Y  <- int2bin(Y,  length=8)
+X1 <- int2bin(X1)
+X2 <- int2bin(X2)
+Y  <- int2bin(Y)
 
 # train the model
 trainr(Y,
