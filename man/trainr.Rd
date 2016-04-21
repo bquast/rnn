@@ -4,27 +4,21 @@
 \alias{trainr}
 \title{Recurrent Neural Network}
 \usage{
-trainr(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
-  print = c("none", "minimal", "full"))
+trainr(Y, X, learningrate, hidden_dim, numepochs = 1,
+  start_from_end = FALSE)
 }
 \arguments{
-\item{Y}{vector of output values}
+\item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
-\item{X1}{vector of input values}
+\item{X}{array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
-\item{X2}{vector of input values}
-
-\item{binary_dim}{dimension of binary representation}
-
-\item{alpha}{size of alpha}
-
-\item{input_dim}{dimension of input layer, i.e. how many numbers to sum}
+\item{learningrate}{learning rate to be applied for weight iteration}
 
 \item{hidden_dim}{dimension of hidden layer}
 
-\item{output_dim}{dimension of output layer}
+\item{numepochs}{number of iteration, i.e. number of time the whole dataset is presented to the network}
 
-\item{print}{should train progress be printed}
+\item{start_from_end}{should the sequence start from the end}
 }
 \value{
 a model to be used by the predictr function
@@ -41,20 +35,25 @@ X2 = sample(0:127, 7000, replace=TRUE)
 Y <- X1 + X2
 
 # convert to binary
-X1 <- int2bin(X1)
-X2 <- int2bin(X2)
-Y  <- int2bin(Y)
+X1 <- int2bin(X1, length=8)
+X2 <- int2bin(X2, length=8)
+Y  <- int2bin(Y,  length=8)
+
+# create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+X <- array( c(X1,X2), dim=c(dim(X1),2) )
+Y <- array( Y, dim=c(dim(Y),1) ) 
 
 # train the model
-trainr(Y,
-       X1,
-       X2,
-       binary_dim =  8,
-       alpha      =  0.1,
-       input_dim  =  2,
-       hidden_dim = 10,
-       output_dim =  1,
-       print = 'full'    )
+model <- trainr(Y=Y,
+                X=X,
+                learningrate   =  0.1,
+                hidden_dim     = 10,
+                numepochs      = 10,
+                start_from_end = TRUE )
+
+plot(colMeans(model$error),type='l',
+     xlab='epoch',
+     ylab='errors'                  )
     
 }
 

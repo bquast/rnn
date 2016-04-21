@@ -4,33 +4,20 @@
 \alias{predictr}
 \title{Recurrent Neural Network}
 \usage{
-predictr(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
-  print = c("none", "minimal", "full"))
+predictr(model, X, hidden = FALSE)
 }
 \arguments{
 \item{model}{output of the trainr function}
 
-\item{X1}{vector of input values}
+\item{X}{array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
-\item{X2}{vector of input values}
-
-\item{binary_dim}{dimension of binary representation}
-
-\item{alpha}{size of alpha}
-
-\item{input_dim}{dimension of input layer, i.e. how many numbers to sum}
-
-\item{hidden_dim}{dimension of hidden layer}
-
-\item{output_dim}{dimension of output layer}
-
-\item{print}{should train progress be printed}
+\item{hidden}{should the function output the hidden units states}
 }
 \value{
-vector of predicted values
+a model to be used by the predictr function
 }
 \description{
-Trains a Recurrent Neural Network.
+predict the output of a RNN model
 }
 \examples{
 # create training numbers
@@ -45,29 +32,28 @@ X1 <- int2bin(X1)
 X2 <- int2bin(X2)
 Y  <- int2bin(Y)
 
+# Create 3d array: dim 1: samples; dim 2: time; dim 3: variables.
+X <- array( c(X1,X2), dim=c(dim(X1),2) )
+Y <- array( Y, dim=c(dim(Y),1) ) 
+
 # train the model
-m1 <- trainr(Y,
-             X1,
-             X2,
-             binary_dim =  8,
-             alpha      =  0.1,
-             input_dim  =  2,
-             hidden_dim = 10,
-             output_dim =  1   )
+model <- trainr(Y=Y,
+                X=X,
+                learningrate   =  0.1,
+                hidden_dim     = 10,
+                numepochs      = 10,
+                start_from_end = TRUE )
              
 # create test inputs
 A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
 A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
+
+# create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+A <- array( c(A1,A2), dim=c(dim(A1),2) )
     
 # predict
-B  <- predictr(m1,
-               A1,
-               A2,
-               binary_dim =  8,
-               alpha      =  0.1,
-               input_dim  =  2,
-               hidden_dim = 10,
-               output_dim =  1   )
+B  <- predictr(model,
+               A     )
  
 # convert back to integers
 A1 <- bin2int(A1)

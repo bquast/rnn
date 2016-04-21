@@ -5,6 +5,9 @@
 #' @export
 
 bin2int <- function(binary){
+  
+  # round
+  binary <- round(binary)
 
   # determine length of binary representation
   length <- dim(binary)[2]

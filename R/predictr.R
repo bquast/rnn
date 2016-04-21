@@ -2,17 +2,11 @@
 #' @export
 #' @importFrom stats runif
 #' @title Recurrent Neural Network
-#' @description Trains a Recurrent Neural Network.
+#' @description predict the output of a RNN model
 #' @param model output of the trainr function
-#' @param X1 vector of input values
-#' @param X2 vector of input values
-#' @param binary_dim dimension of binary representation
-#' @param alpha size of alpha
-#' @param input_dim dimension of input layer, i.e. how many numbers to sum
-#' @param hidden_dim dimension of hidden layer
-#' @param output_dim dimension of output layer
-#' @param print should train progress be printed
-#' @return vector of predicted values
+#' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
+#' @param hidden should the function output the hidden units states
+#' @return a model to be used by the predictr function
 #' @examples 
 #' # create training numbers
 #' X1 = sample(0:127, 7000, replace=TRUE)
@@ -26,29 +20,28 @@
 #' X2 <- int2bin(X2)
 #' Y  <- int2bin(Y)
 #' 
+#' # Create 3d array: dim 1: samples; dim 2: time; dim 3: variables.
+#' X <- array( c(X1,X2), dim=c(dim(X1),2) )
+#' Y <- array( Y, dim=c(dim(Y),1) ) 
+#' 
 #' # train the model
-#' m1 <- trainr(Y,
-#'              X1,
-#'              X2,
-#'              binary_dim =  8,
-#'              alpha      =  0.1,
-#'              input_dim  =  2,
-#'              hidden_dim = 10,
-#'              output_dim =  1   )
+#' model <- trainr(Y=Y,
+#'                 X=X,
+#'                 learningrate   =  0.1,
+#'                 hidden_dim     = 10,
+#'                 numepochs      = 10,
+#'                 start_from_end = TRUE )
 #'              
 #' # create test inputs
 #' A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
 #' A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
+#' 
+#' # create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+#' A <- array( c(A1,A2), dim=c(dim(A1),2) )
 #'     
 #' # predict
-#' B  <- predictr(m1,
-#'                A1,
-#'                A2,
-#'                binary_dim =  8,
-#'                alpha      =  0.1,
-#'                input_dim  =  2,
-#'                hidden_dim = 10,
-#'                output_dim =  1   )
+#' B  <- predictr(model,
+#'                A     )
 #'  
 #' # convert back to integers
 #' A1 <- bin2int(A1)
@@ -62,84 +55,79 @@
 #' hist( B-(A1+A2) )
 #' 
 
-
-predictr <- function(model, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, print = c('none', 'minimal', 'full')) {
+predictr <- function(model, X, hidden = FALSE) {
   
-  # check what largest possible number is
-  largest_number = 2^binary_dim
+  # coerce to array if matrix
+  if(length(dim(X)) == 2){
+    X <- array(X,dim=c(dim(X),1))
+  }
   
-  # create output vector
-  Y <- matrix(nrow = dim(X1)[1], ncol = binary_dim)
-
   # load neural network weights
-  synapse_0 = model$synapse_0
-  synapse_1 = model$synapse_1
-  synapse_h = model$synapse_h
+  synapse_0      = model$synapse_0
+  synapse_1      = model$synapse_1
+  synapse_h      = model$synapse_h
+  start_from_end = model$start_from_end
   
-  # training logic
-  for (j in 1:dim(X1)[1]) {
-    
-    if(print != 'none' && j %% 1000 == 0) {
-      print(paste('Summation number:', j))
-    }
+  # extract the network dimensions, only the binary dim
+  input_dim = dim(synapse_0)[1]
+  output_dim = dim(synapse_1)[2]
+  hidden_dim = dim(synapse_0)[2]
+  binary_dim = dim(X)[2]
+  
+  # Storing layers states
+  store_output <- array(0,dim = c(dim(X)[1:2],output_dim))
+  store_hidden <- array(0,dim = c(dim(X)[1:2],hidden_dim))
+  
+  for (j in 1:dim(Y)[1]) {
     
     # generate a simple addition problem (a + b = c)
-    a = X1[j,]
-    b = X2[j,]
+    a = array(X[j,,],dim=c(dim(X)[2],input_dim))
     
-    # where we'll store our best guesss (binary encoded)
-    d = matrix(0, nrow = 1, ncol = binary_dim)
     
-    overallError = 0
-    
-    layer_2_deltas = matrix(0)
     layer_1_values = matrix(0, nrow=1, ncol = hidden_dim)
-    # layer_1_values = rbind(layer_1_values, matrix(0, nrow=1, ncol=hidden_dim))
     
-    # moving along the positions in the binary encoding
-    for (position in 0:(binary_dim-1)) {
+    # time index vector, needed because we predict in one direction but update the weight in an other
+    if(start_from_end == T){
+      pos_vec <- binary_dim:1
+      pos_vec_back <- 1:binary_dim
+    }else{
+      pos_vec <- 1:binary_dim
+      pos_vec_back <- binary_dim:1
+    }
+    
+    # moving along the time
+    for (position in pos_vec) {
       
       # generate input and output
-      X = cbind(a[binary_dim - position],b[binary_dim - position])
+      x = a[position,]
       
       # hidden layer (input ~+ prev_hidden)
-      layer_1 = sigmoid((X%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
+      layer_1 = sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
       
       # output layer (new binary representation)
       layer_2 = sigmoid(layer_1 %*% synapse_1)
       
-      # decode estimate so we can print it out
-      d[binary_dim - position] = round(layer_2)
+      # storing
+      store_output[j,position,] = layer_2
+      store_hidden[j,position,] = layer_1
       
-      # store hidden layer so we can print it out
+      # store hidden layer so we can print it out. Needed for error calculation and weight iteration
       layer_1_values = rbind(layer_1_values, layer_1)
       
-      if(print == 'full' && j %% 1000 == 0) {
-        print(paste('x1:', a[binary_dim - position]))
-        print(paste('x2:', b[binary_dim - position], '+'))
-        print('-------')
-        print(paste('y^:', d[binary_dim - position]))
-        print('=======')
-      }
     }
-    
-    # output to decimal
-    out = b2i(as.vector(d))
-
-    # print out progress
-    if(print != 'none' && j %% 1000 == 0) {
-      print(paste('Error:', overallError))
-      print(paste('X1[', j, ']:', paste(a, collapse = ' '), ' ', '(', b2i(a), ')'))
-      print(paste('X2[', j, ']:', paste(b, collapse = ' '), '+', '(', b2i(b), ')'))
-      print('-----------------------------')
-      print(paste('predict Y^:',   paste(d, collapse = ' '), ' ', '(', out, ')'))
-      print('=============================')
-    }
-    
-    # store value
-    Y[j,] <- d
   }
+
   
   # return output vector
-  return( Y )
+  if(hidden == FALSE){
+    # convert to matrix if 2 dimensional
+    if(dim(store_output)[3]==1) {
+      output <- matrix(store_output,
+                       nrow = dim(store_output)[1],
+                       ncol = dim(store_output)[2])  }
+    # return output
+    return(output)
+  }else{
+    return(store_hidden)
+  }
 }
