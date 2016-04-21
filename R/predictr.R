@@ -78,7 +78,7 @@ predictr <- function(model, X, hidden = FALSE) {
   store_output <- array(0,dim = c(dim(X)[1:2],output_dim))
   store_hidden <- array(0,dim = c(dim(X)[1:2],hidden_dim))
   
-  for (j in 1:dim(Y)[1]) {
+  for (j in 1:dim(X)[1]) {
     
     # generate a simple addition problem (a + b = c)
     a = array(X[j,,],dim=c(dim(X)[2],input_dim))
