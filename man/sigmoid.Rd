@@ -4,7 +4,7 @@
 \alias{sigmoid}
 \title{Sigmoid}
 \usage{
-sigmoid(x, method = c("logistic", "Gompertz", "ogive"), inverse = FALSE,
+sigmoid(x, method = c("logistic", "SoftMax", "Gompertz"), inverse = FALSE,
   ...)
 }
 \arguments{

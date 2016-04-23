@@ -5,12 +5,14 @@
 #' @param  x number
 #' 
 
-sigmoid <- function(x, method=c('logistic', 'Gompertz', 'ogive'), inverse=FALSE, ...) {
+sigmoid <- function(x, method=c('logistic', 'SoftMax', 'Gompertz'), inverse=FALSE, ...) {
   #  find method
   method <- match.arg(method)
   
   if (method=='logistic' && inverse==FALSE) {
     return( logistic(x, ...) )
+  } else if (method=='SoftMax') {
+    return(SoftMax(x, ...))
   } else if (method=='Gompertz' && inverse==FALSE) {
     return( Gompertz(x, ...) )
   } else if (method=='logistic' && inverse==TRUE) {
@@ -23,6 +25,14 @@ sigmoid <- function(x, method=c('logistic', 'Gompertz', 'ogive'), inverse=FALSE,
 
 logistic <- function(x, k=1, x0=0)
   1 / (1+exp( -k*(x-x0) ))
+
+SoftMax <- function(x, lambda=2) {
+  sdx <- sd(x, na.rm=TRUE)
+  mx  <- mean(x, na.rm=TRUE)
+  nx <- (x-mx) / ( lambda * (sdx/(2*pi)) )
+  logistic(nx)
+}
+  
   
 Gompertz <- function(x, a=1, b=1, c=1)
   a*exp(-b*exp(-c*x))
