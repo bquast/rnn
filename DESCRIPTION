@@ -8,7 +8,10 @@ Depends:
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
-Suggests: testthat,
+Imports:
+    sigmoid
+Suggests:
+    testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr

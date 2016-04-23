@@ -4,7 +4,7 @@
 \alias{predictr}
 \title{Recurrent Neural Network}
 \usage{
-predictr(model, X, hidden = FALSE)
+predictr(model, X, hidden = FALSE, ...)
 }
 \arguments{
 \item{model}{output of the trainr function}
