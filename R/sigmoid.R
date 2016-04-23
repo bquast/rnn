@@ -10,7 +10,7 @@ sigmoid <- function(x, method=c('logistic', 'SoftMax', 'Gompertz'), inverse=FALS
   method <- match.arg(method)
   
   if (SoftMax==TRUE)
-    x <- SoftMax(x, ...)
+    x <- SoftMax(x)
   
   if (method=='logistic' && inverse==FALSE) {
     return( logistic(x, ...) )
