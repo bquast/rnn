@@ -31,25 +31,25 @@ As can be seen from the above, the model relies on two other functions that are 
 The first function is `sigmoid()`, which converts an integer to its sigmoid value.
 
 ```{r sigmoid}
-(a <- sigmoid(3))
+(a <- sigmoid::sigmoid(3))
 ```
 
 The code for the `sigmoid()` function is:
 
 ```{r sigmoid-code}
-sigmoid
+sigmoid:::logistic
 ```
 
 The second function converts the sigmoid value of a number to its derivative.
 
 ```{r sigmoid-der}
-sigmoid_output_to_derivative(a) # a was created above using sigmoid()
+sigmoid:::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 ```
 
 Finally, we can inspect this code using:
 
 ```{r sigmoid-der-code}
-sigmoid_output_to_derivative
+sigmoid:::sigmoid_output_to_derivative
 ```
 
 # Application
