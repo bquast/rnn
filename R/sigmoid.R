@@ -5,9 +5,8 @@
 #' @param  x number
 #' 
 
-sigmoid = function(x) {
-  output = 1 / (1+exp(-x))
-  return(output)            }
+sigmoid = function(x)
+  1 / (1+exp(-x))
 
 #' @name sigmoid_output_to_derivative
 #' @export
