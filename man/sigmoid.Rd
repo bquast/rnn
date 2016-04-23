@@ -4,7 +4,8 @@
 \alias{sigmoid}
 \title{Sigmoid}
 \usage{
-sigmoid(x)
+sigmoid(x, method = c("logistic", "Gompertz", "ogive"), inverse = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{number}

@@ -4,7 +4,7 @@
 \alias{sigmoid_output_to_derivative}
 \title{Sigmoid Derivative}
 \usage{
-sigmoid_output_to_derivative(output)
+sigmoid_output_to_derivative(x)
 }
 \arguments{
 \item{output}{sigmoid value}
