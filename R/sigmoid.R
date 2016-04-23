@@ -5,9 +5,12 @@
 #' @param  x number
 #' 
 
-sigmoid <- function(x, method=c('logistic', 'SoftMax', 'Gompertz'), inverse=FALSE, ...) {
+sigmoid <- function(x, method=c('logistic', 'SoftMax', 'Gompertz'), inverse=FALSE, SoftMax=FALSE, ...) {
   #  find method
   method <- match.arg(method)
+  
+  if (SoftMax==TRUE)
+    x <- SoftMax(x, ...)
   
   if (method=='logistic' && inverse==FALSE) {
     return( logistic(x, ...) )
@@ -25,14 +28,6 @@ sigmoid <- function(x, method=c('logistic', 'SoftMax', 'Gompertz'), inverse=FALS
 
 logistic <- function(x, k=1, x0=0)
   1 / (1+exp( -k*(x-x0) ))
-
-SoftMax <- function(x, lambda=2) {
-  sdx <- sd(x, na.rm=TRUE)
-  mx  <- mean(x, na.rm=TRUE)
-  nx <- (x-mx) / ( lambda * (sdx/(2*pi)) )
-  logistic(nx)
-}
-  
   
 Gompertz <- function(x, a=1, b=1, c=1)
   a*exp(-b*exp(-c*x))
@@ -43,6 +38,9 @@ logit <- function(x)
 inverse_Gompertz <- function(x)
   -1*log(-1*log(x))
   
+SoftMax <- function(x, lambda=2)
+  (x-mean(x, na.rm=TRUE)) / ( lambda * (sd(x, na.rm=TRUE)/(2*pi)) )
+
 
 #' @name sigmoid_output_to_derivative
 #' @export

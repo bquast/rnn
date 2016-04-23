@@ -5,7 +5,7 @@
 \title{Sigmoid}
 \usage{
 sigmoid(x, method = c("logistic", "SoftMax", "Gompertz"), inverse = FALSE,
-  ...)
+  SoftMax = FALSE, ...)
 }
 \arguments{
 \item{x}{number}
