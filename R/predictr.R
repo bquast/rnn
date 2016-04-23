@@ -7,7 +7,8 @@
 #' @param model output of the trainr function
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param hidden should the function output the hidden units states
-#' @return a model to be used by the predictr function
+#' @param ... arguments to pass on to sigmoid function
+#' @return array or matrix of predicted values
 #' @examples 
 #' # create training numbers
 #' X1 = sample(0:127, 7000, replace=TRUE)

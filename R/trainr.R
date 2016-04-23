@@ -10,6 +10,7 @@
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension of hidden layer
 #' @param start_from_end should the sequence start from the end
+#' @param ... arguments to pass on to sigmoid function
 #' @return a model to be used by the predictr function
 #' @examples 
 #' # create training numbers

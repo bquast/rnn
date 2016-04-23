@@ -19,6 +19,8 @@ trainr(Y, X, learningrate, hidden_dim, numepochs = 1,
 \item{numepochs}{number of iteration, i.e. number of time the whole dataset is presented to the network}
 
 \item{start_from_end}{should the sequence start from the end}
+
+\item{...}{arguments to pass on to sigmoid function}
 }
 \value{
 a model to be used by the predictr function

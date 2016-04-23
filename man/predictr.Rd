@@ -12,9 +12,11 @@ predictr(model, X, hidden = FALSE, ...)
 \item{X}{array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
 \item{hidden}{should the function output the hidden units states}
+
+\item{...}{arguments to pass on to sigmoid function}
 }
 \value{
-a model to be used by the predictr function
+array or matrix of predicted values
 }
 \description{
 predict the output of a RNN model
