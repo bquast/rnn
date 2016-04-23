@@ -55,7 +55,7 @@
 #' hist( B-(A1+A2) )
 #' 
 
-predictr <- function(model, X, hidden = FALSE) {
+predictr <- function(model, X, hidden = FALSE, ...) {
   
   # coerce to array if matrix
   if(length(dim(X)) == 2){
@@ -102,10 +102,10 @@ predictr <- function(model, X, hidden = FALSE) {
       x = a[position,]
       
       # hidden layer (input ~+ prev_hidden)
-      layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
+      layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h), ...)
       
       # output layer (new binary representation)
-      layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1)
+      layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1, ...)
       
       # storing
       store_output[j,position,] = layer_2

@@ -5,7 +5,7 @@
 \title{Recurrent Neural Network}
 \usage{
 trainr(Y, X, learningrate, hidden_dim, numepochs = 1,
-  start_from_end = FALSE)
+  start_from_end = FALSE, ...)
 }
 \arguments{
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}

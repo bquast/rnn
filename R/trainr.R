@@ -41,7 +41,7 @@
 #'     
 
 
-trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end=FALSE) {
+trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end=FALSE, ...) {
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -114,10 +114,10 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         y = c[position,]
         
         # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
+        layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h), ...)
         
         # output layer (new binary representation)
-        layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1)
+        layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1, ...)
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layer_2
