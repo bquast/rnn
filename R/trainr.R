@@ -25,7 +25,6 @@
 #' 
 #' # create 3d array: dim 1: samples; dim 2: time; dim 3: variables
 #' X <- array( c(X1,X2), dim=c(dim(X1),2) )
-#' Y <- array( Y, dim=c(dim(Y),1) ) 
 #' 
 #' # train the model
 #' model <- trainr(Y=Y,
