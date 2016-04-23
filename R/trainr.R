@@ -1,6 +1,7 @@
 #' @name trainr
 #' @export
 #' @importFrom stats runif
+#' @importFrom sigmoid sigmoid sigmoid_output_to_derivative
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
@@ -113,14 +114,14 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         y = c[position,]
         
         # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
+        layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
         
         # output layer (new binary representation)
-        layer_2 = sigmoid(layer_1 %*% synapse_1)
+        layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1)
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layer_2
-        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid_output_to_derivative(layer_2))
+        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid::sigmoid_output_to_derivative(layer_2))
         overallError = overallError + sum(abs(layer_2_error))
         
         # storing
@@ -148,7 +149,7 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         layer_2_delta = layer_2_deltas[dim(layer_2_deltas)[1]-position,]
         # error at hidden layer
         layer_1_delta = (future_layer_1_delta %*% t(synapse_h) + layer_2_delta %*% t(synapse_1)) *
-          sigmoid_output_to_derivative(layer_1)
+          sigmoid::sigmoid_output_to_derivative(layer_1)
         
         # let's update all our weights so we can try again
         synapse_1_update = synapse_1_update + matrix(layer_1) %*% layer_2_delta
