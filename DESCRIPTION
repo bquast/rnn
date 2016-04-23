@@ -10,6 +10,8 @@ LazyData: true
 RoxygenNote: 5.0.1
 Remotes:
     bquast/sigmoid
+Imports:
+    sigmoid
 Suggests:
     testthat,
     knitr,
