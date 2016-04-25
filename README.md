@@ -1,7 +1,7 @@
 rnn
 =======
-[![CRAN Version](http://www.r-pkg.org/badges/version/rnn)](http://cran.r-project.org/package=rnn)
-[![RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](http://cran.r-project.org/package=rnn)
+[![CRAN Version](http://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
+[![RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
 [![Travis-CI Build Status](https://travis-ci.org/bquast/rnn.png?branch=master)](https://travis-ci.org/bquast/rnn)
 [![Coverage Status](https://coveralls.io/repos/bquast/rnn/badge.svg?branch=master)](https://coveralls.io/r/bquast/rnn?branch=master)
 
@@ -9,7 +9,7 @@ Implementation of a Recurrent Neural Network in R.
 
 Installation
 ------------
-The **stable** version can be installed from [CRAN](http://cran.r-project.org/package=rnn) using:
+The **stable** version can be installed from [CRAN](https://cran.r-project.org/package=rnn) using:
 
 ```r
 install.packages('rnn')
