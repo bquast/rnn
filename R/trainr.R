@@ -1,7 +1,7 @@
 #' @name trainr
 #' @export
 #' @importFrom stats runif
-#' @importFrom sigmoid sigmoid sigmoid_output_to_derivative
+#' @importFrom sigmoid logistic sigmoid_output_to_derivative
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
@@ -10,7 +10,6 @@
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension of hidden layer
 #' @param start_from_end should the sequence start from the end
-#' @param ... arguments to pass on to sigmoid function
 #' @return a model to be used by the predictr function
 #' @examples 
 #' # create training numbers
@@ -42,7 +41,7 @@
 #'     
 
 
-trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end=FALSE, ...) {
+trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end=FALSE) {
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -115,10 +114,10 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         y = c[position,]
         
         # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h), ...)
+        layer_1 = sigmoid::logistic((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
         
         # output layer (new binary representation)
-        layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1, ...)
+        layer_2 = sigmoid::logistic(layer_1 %*% synapse_1)
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layer_2
