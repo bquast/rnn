@@ -123,11 +123,11 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   if(hidden == FALSE){
     # convert to matrix if 2 dimensional
     if(dim(store_output)[3]==1) {
-      output <- matrix(store_output,
+      store_output <- matrix(store_output,
                        nrow = dim(store_output)[1],
                        ncol = dim(store_output)[2])  }
     # return output
-    return(output)
+    return(store_output)
   }else{
     return(store_hidden)
   }
