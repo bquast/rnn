@@ -1,7 +1,7 @@
 #' @name trainr
 #' @export
 #' @importFrom stats runif
-#' @importFrom sigmoid logistic sigmoid_output_to_derivative
+#' @importFrom sigmoid sigmoid sigmoid_output_to_derivative
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
@@ -10,6 +10,7 @@
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension of hidden layer
 #' @param start_from_end should the sequence start from the end
+#' @param ... arguments to pass on to sigmoid function
 #' @return a model to be used by the predictr function
 #' @examples 
 #' # create training numbers
@@ -41,7 +42,7 @@
 #'     
 
 
-trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end=FALSE) {
+trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim, numepochs = 1, start_from_end=FALSE, ...) {
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -69,9 +70,16 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
   synapse_1 = matrix(stats::runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
   synapse_h = matrix(stats::runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
   
+  # initialize the update
   synapse_0_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
   synapse_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
   synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
+  
+  # initialize the old update for the momentum
+  synapse_0_old_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
+  synapse_1_old_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
+  synapse_h_old_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
+
   
   # Storing layers states
   store_output <- array(0,dim = dim(Y))
@@ -82,7 +90,7 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
   
   # training logic
   for(epoch in seq(numepochs)){
-    message(paste0("Training epoch ",epoch))
+    message(paste0("Training epoch: ",epoch," - Learning rate: ",learningrate))
     for (j in 1:dim(Y)[1]) {
       
       # generate a simple addition problem (a + b = c)
@@ -114,10 +122,10 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         y = c[position,]
         
         # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid::logistic((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
+        layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h), ...)
         
         # output layer (new binary representation)
-        layer_2 = sigmoid::logistic(layer_1 %*% synapse_1)
+        layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1, ...)
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layer_2
@@ -159,18 +167,30 @@ trainr <- function(Y, X, learningrate, hidden_dim, numepochs = 1, start_from_end
         future_layer_1_delta = layer_1_delta
       }
       
-      synapse_0 = synapse_0 + ( synapse_0_update * learningrate )
-      synapse_1 = synapse_1 + ( synapse_1_update * learningrate )
-      synapse_h = synapse_h + ( synapse_h_update * learningrate )
+      # Calculate the real update including learning rate and momentum
+      synapse_0_update = synapse_0_update * learningrate + synapse_0_old_update * momentum
+      synapse_1_update = synapse_1_update * learningrate + synapse_1_old_update * momentum
+      synapse_h_update = synapse_h_update * learningrate + synapse_h_old_update * momentum
       
+      # Applying the update
+      synapse_0 = synapse_0 + synapse_0_update
+      synapse_1 = synapse_1 + synapse_1_update
+      synapse_h = synapse_h + synapse_h_update
+      
+      # Update the learning rate
+      learningrate <- learningrate * learningrate_decay
+      
+      # Storing the old update for next momentum
+      synapse_0_old_update = synapse_0_update
+      synapse_1_old_update = synapse_1_update
+      synapse_h_old_update = synapse_h_update
+      
+      # Initializing the update
       synapse_0_update = synapse_0_update * 0
       synapse_1_update = synapse_1_update * 0
       synapse_h_update = synapse_h_update * 0
-      
-      
-      # update best guess if error is minimal
-      
     }
+    # update best guess if error is minimal
     if(colMeans(error)[epoch] <= min(colMeans(error)[1:epoch])){
       store_output_best <- store_output
       store_hidden_best <- store_hidden
