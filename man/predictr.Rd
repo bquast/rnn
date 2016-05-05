@@ -42,7 +42,6 @@ model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
                 hidden_dim     = 10,
-                numepochs      = 10,
                 start_from_end = TRUE )
              
 # create test inputs
