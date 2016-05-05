@@ -34,14 +34,8 @@
 #'                 X=X,
 #'                 learningrate   =  0.1,
 #'                 hidden_dim     = 10,
-#'                 numepochs      = 10,
 #'                 start_from_end = TRUE )
-#' 
-#' plot(colMeans(model$error),type='l',
-#'      xlab='epoch',
-#'      ylab='errors'                  )
 #'     
-
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim, numepochs = 1, start_from_end=FALSE) {
   

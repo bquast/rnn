@@ -51,12 +51,7 @@ model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
                 hidden_dim     = 10,
-                numepochs      = 10,
                 start_from_end = TRUE )
-
-plot(colMeans(model$error),type='l',
-     xlab='epoch',
-     ylab='errors'                  )
     
 }
 

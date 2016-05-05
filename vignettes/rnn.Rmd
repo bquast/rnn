@@ -1,6 +1,6 @@
 ---
 title: "Recurrent Neural Network"
-author: "Vignette Author"
+author: "Bastiaan Quast"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -26,30 +26,30 @@ We can view the code of the main `rnn()` function by calling it without the para
 trainr
 ```
 
-As can be seen from the above, the model relies on two other functions that are included with the package.
+As can be seen from the above, the model relies on two other functions that are available trough the `sigmoid` package.
 
-The first function is `sigmoid()`, which converts an integer to its sigmoid value.
+The first function is `logistic()`, which converts an integer to its sigmoid value.
 
 ```{r sigmoid}
-(a <- sigmoid::sigmoid(3))
+(a <- sigmoid::logistic(3))
 ```
 
 The code for the `sigmoid()` function is:
 
 ```{r sigmoid-code}
-sigmoid:::logistic
+sigmoid::logistic
 ```
 
 The second function converts the sigmoid value of a number to its derivative.
 
 ```{r sigmoid-der}
-sigmoid:::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
+sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 ```
 
 Finally, we can inspect this code using:
 
 ```{r sigmoid-der-code}
-sigmoid:::sigmoid_output_to_derivative
+sigmoid::sigmoid_output_to_derivative
 ```
 
 # Application
@@ -94,8 +94,15 @@ model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
                 hidden_dim     = 10,
-                numepochs      = 10,
                 start_from_end = TRUE )
+```
+
+See the evolution of the error over different epochs:
+
+```{r error}
+plot(colMeans(model$error),type='l',
+     xlab='epoch',
+     ylab='errors'                  )
 ```
 
 Now create testing data
@@ -126,5 +133,5 @@ A2 <- bin2int(A2)
 B  <- bin2int(B)
 
 # plot the difference
-hist(B-(A1+A2))
+hist( B-(A1+A2) )
 ```
