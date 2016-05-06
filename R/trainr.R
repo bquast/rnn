@@ -101,11 +101,11 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       # layer_1_values = rbind(layer_1_values, matrix(0, nrow=1, ncol=hidden_dim))
       
       # time index vector, needed because we predict in one direction but update the weight in an other
-      if(start_from_end == T){
-        pos_vec <- binary_dim:1
+      if(start_from_end == TRUE) {
+        pos_vec      <- binary_dim:1
         pos_vec_back <- 1:binary_dim
-      }else{
-        pos_vec <- 1:binary_dim
+      } else {
+        pos_vec      <- 1:binary_dim
         pos_vec_back <- binary_dim:1
       }
       
@@ -144,8 +144,8 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       # Weight iteration,
       for (position in 0:(binary_dim-1)) {
         
-        x =a[pos_vec_back[position+1],]
-        layer_1 = layer_1_values[dim(layer_1_values)[1]-position,]
+        x            = a[pos_vec_back[position+1],]
+        layer_1      = layer_1_values[dim(layer_1_values)[1]-position,]
         prev_layer_1 = layer_1_values[dim(layer_1_values)[1]-(position+1),]
         
         # error at output layer
