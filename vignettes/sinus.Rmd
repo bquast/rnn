@@ -49,7 +49,7 @@ Train the model.
 
 ```{r train, message=FALSE}
 # Train with all but the 2 lasts sample
-model <- trainr(Y = Y[seq(sample_dim-2),],X = X[seq(sample_dim-2),],learningrate = 0.05,hidden_dim = 16,numepochs=500,start_from_end = F)
+model <- trainr(Y = Y[seq(sample_dim-2),],X = X[seq(sample_dim-2),],learningrate = 0.05,hidden_dim = 16,numepochs=500)
 ```
 
 Plot it using testing data.
