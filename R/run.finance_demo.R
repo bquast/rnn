@@ -6,8 +6,9 @@
 ##' @param port if not NULL will deploy on the local network on this port, just look for the IP of the host and go for example on 192.168.1.20:port to access the app from anywhere in the network
 ##' @author Dimitri Fichou
 ##' @examples
+##' \dontrun{
 ##' run.finance_demo()
-##'
+##' }
 
 run.finance_demo <- function(port=NULL) {
   appDir <- system.file("shinyapps", "finance_demo", package = "rnn")

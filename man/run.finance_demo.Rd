@@ -13,8 +13,9 @@ run.finance_demo(port = NULL)
 Function to launch the finance_demo app
 }
 \examples{
+\dontrun{
 run.finance_demo()
-
+}
 }
 \author{
 Dimitri Fichou
