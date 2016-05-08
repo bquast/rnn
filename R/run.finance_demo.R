@@ -1,5 +1,6 @@
-##' Function to launch the finance_demo app
-##'
+##' @name run.finance_demo
+##' @title Demo app on finance data
+##' @description Function to launch the finance_demo app
 ##' @param port if not NULL will deploy on the local network on this port, just look for the IP of the host and go for example on 192.168.1.20:port to access the app from anywhere in the network
 ##' @author Dimitri Fichou
 ##' @examples
