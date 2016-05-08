@@ -3,6 +3,7 @@
 export(bin2int)
 export(int2bin)
 export(predictr)
+export(run.finance_demo)
 export(trainr)
 importFrom(sigmoid,logistic)
 importFrom(sigmoid,sigmoid)
