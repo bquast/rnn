@@ -10,7 +10,8 @@ License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
 Imports:
-    sigmoid
+    sigmoid,
+    shiny
 Suggests:
     testthat,
     knitr,
