@@ -65,7 +65,7 @@ ui <- fluidPage(
       h4("Data parameters"),
       selectizeInput("target","currency to predict",choices=c("EURUSD"=1,"CHFUSD"=2,"GBPUSD"=3,"JPYUSD"=4),selected=1),
       numericInput("prediction_gap","Number of day in advance to predict, the bigger, the more difficult",1),
-      numericInput("training_amount","Number of days of training, the bigger, the more easy",1000),
+      numericInput("training_amount","Number of days of training, the bigger, the easier",1000),
       h4("Network parameters"),
       numericInput("epoch","number of epochs",50),
       numericInput("hidden","number of hidden units",10),
