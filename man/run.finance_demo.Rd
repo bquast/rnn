@@ -14,6 +14,7 @@ Function to launch the finance_demo app
 }
 \examples{
 run.finance_demo()
+
 }
 \author{
 Dimitri Fichou
