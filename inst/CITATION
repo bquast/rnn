@@ -1,0 +1,16 @@
+bibentry(bibtype      = "Article",
+         title        = "rnn: a Recurrent Neural Network in R",
+         author       = "Bastiaan Quast",
+         organization = "The Graduate Institute",
+		     address      = "Maison de la paix, Geneva, Switzerland",
+         year         = "2016",
+         journal      = "Working Papers",
+         url          = "http://qua.st/rnn",
+         textVersion  = "Quast, B.A. (2016). rnn: a Recurrent Neural Network in R",
+		 
+		 
+		mheader       = "To cite rnn in publications please use:",
+
+		mfooter       = "I have invested a lot of time and effort in creating rnn, please cite it when using it. See also 'citation()' for citing R."
+		
+)

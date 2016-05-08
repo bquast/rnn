@@ -1,0 +1,137 @@
+---
+title: "Recurrent Neural Network"
+author: "Bastiaan Quast"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recurrent Neural Network}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Package
+
+This package includes an example Recurrent Neural Network.
+The package is loaded using:
+
+```{r package}
+library(rnn)
+```
+
+# Code
+
+We can view the code of the main `rnn()` function by calling it without the parathesis (not printed here).
+
+```{r code-rnn, eval=FALSE}
+trainr
+```
+
+As can be seen from the above, the model relies on two other functions that are available trough the `sigmoid` package.
+
+The first function is `logistic()`, which converts an integer to its sigmoid value.
+
+```{r sigmoid}
+(a <- sigmoid::logistic(3))
+```
+
+The code for the `sigmoid()` function is:
+
+```{r sigmoid-code}
+sigmoid::logistic
+```
+
+The second function converts the sigmoid value of a number to its derivative.
+
+```{r sigmoid-der}
+sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
+```
+
+Finally, we can inspect this code using:
+
+```{r sigmoid-der-code}
+sigmoid::sigmoid_output_to_derivative
+```
+
+# Application
+
+By setting a **seed** for the random number generator, we ensure replicability.
+
+```{r seed}
+set.seed(1)
+```
+
+An example is included in the help file.
+
+```{r help, eval=FALSE}
+help('trainr')
+```
+
+First we generate the data:
+
+```{r data}
+# create sample inputs
+X1 = sample(0:127, 5000, replace=TRUE)
+X2 = sample(0:127, 5000, replace=TRUE)
+
+# create sample output
+Y <- X1 + X2
+
+# convert to binary
+X1 <- int2bin(X1)
+X2 <- int2bin(X2)
+Y  <- int2bin(Y)
+
+# Create 3d array: dim 1: samples; dim 2: time; dim 3: variables.
+X <- array( c(X1,X2), dim=c(dim(X1),2) )
+Y <- array( Y, dim=c(dim(Y),1) ) 
+```
+
+This example is:
+
+```{r example}
+# train the model
+model <- trainr(Y=Y,
+                X=X,
+                learningrate   =  0.1,
+                hidden_dim     = 10,
+                start_from_end = TRUE )
+```
+
+See the evolution of the error over different epochs:
+
+```{r error}
+plot(colMeans(model$error),type='l',
+     xlab='epoch',
+     ylab='errors'                  )
+```
+
+Now create testing data
+
+```{r test-data}
+# create test inputs
+A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
+A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
+
+# create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+A <- array( c(A1,A2), dim=c(dim(A1),2) )
+```
+
+Predict based on testing data.
+
+```{r predictr}
+# predict
+B  <- predictr(model,
+               A     )
+```
+
+Test prediction against true values
+
+```{r test}
+# convert back to integers
+A1 <- bin2int(A1)
+A2 <- bin2int(A2)
+B  <- bin2int(B)
+
+# plot the difference
+hist( B-(A1+A2) )
+```

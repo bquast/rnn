@@ -1,0 +1,35 @@
+rnn 0.5.0
+===================
+
+* rename rnn to trainr
+
+* trainr outputs model
+
+* add predictr function to use trainr model
+
+* defaults to no printing
+
+
+rnn 0.3.0
+===================
+
+* switch to internal methods for binary representation
+
+* add choice of print methods
+
+
+rnn 0.3.0
+===================
+
+* modified print method, highlights the column-by-column input method
+
+
+rnn 0.2.0
+===================
+
+* generalised to use user training data instead of generated
+
+rnn 0.1.0
+===================
+
+* initial release
