@@ -9,5 +9,7 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+vignettes/seq2seq_unsync_2nd_attempt.Rmd
+vignettes/seq2seq_unsync_first_attempt.Rmd
 .Rproj.user
 inst/doc

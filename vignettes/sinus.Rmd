@@ -49,12 +49,12 @@ Train the model.
 
 ```{r train, message=FALSE}
 # Train with all but the 2 lasts sample
-model <- trainr(Y = Y[seq(sample_dim-2),],X = X[seq(sample_dim-2),],learningrate = 0.05,hidden_dim = 16,numepochs=500)
+model <- trainr(Y = Y[seq(sample_dim-2),],X = X[seq(sample_dim-2),],learningrate = 0.05,hidden_dim = 16,numepochs=50)
 ```
 
 Plot it using testing data.
 
-```{r plot}
+```{r plot,fig.height=9,fig.width=7}
 # Plot and predict all samples
 layout(cbind(seq(sample_dim-2),c((sample_dim-1):sample_dim,rep(sample_dim+1,sample_dim-4))))
 par(mar=c(1.5,2,1,1),xaxt="s",yaxt="s",mgp=c(1.5,0.5,0),oma=c(0,0,4,0))
