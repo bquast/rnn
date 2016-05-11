@@ -193,9 +193,8 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     message(paste0("Epoch error: ",colMeans(error)[epoch]))
   }
   
-  
-  # output object with synapses
-  return(list(synapse_0         = synapse_0,
+  # create utput object
+  output=list(synapse_0         = synapse_0,
               synapse_1         = synapse_1,
               synapse_h         = synapse_h,
               error             = error,
@@ -203,6 +202,12 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
               store_hidden      = store_hidden,
               store_hidden_best = store_hidden_best,
               store_output_best = store_output_best,
-              start_from_end    = start_from_end) )
+              start_from_end    = start_from_end)
+  
+  attr(output, 'error') <- colMeans(error)
+  
+  
+  # return output
+  return(output)
   
 }
