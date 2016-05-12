@@ -63,20 +63,21 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   }
   
   # load neural network weights
-  synapse_0      = model$synapse_0
-  synapse_1      = model$synapse_1
-  synapse_h      = model$synapse_h
-  start_from_end = model$start_from_end
+  time_synapse      = model$time_synapse
+  recurrent_synapse = model$recurrent_synapse
+  start_from_end    = model$start_from_end
   
   # extract the network dimensions, only the binary dim
-  input_dim = dim(synapse_0)[1]
-  output_dim = dim(synapse_1)[2]
-  hidden_dim = dim(synapse_0)[2]
-  binary_dim = dim(X)[2]
+  input_dim         = dim(time_synapse[[1]])[1]
+  output_dim        = dim(time_synapse[[length(time_synapse)]])[2]
+  synapse_dim        = c(unlist(lapply(time_synapse,function(x){dim(x)[1]})),output_dim)
+  binary_dim         = dim(X)[2]
   
-  # Storing layers states
-  store_output <- array(0,dim = c(dim(X)[1:2],output_dim))
-  store_hidden <- array(0,dim = c(dim(X)[1:2],hidden_dim))
+  store <- list()
+  for(i in seq(length(synapse_dim) - 1)){
+    store[[i]] <- array(0,dim = c(dim(X)[1:2],synapse_dim[i+1]))
+  }
+  
   
   for (j in 1:dim(X)[1]) {
     
@@ -84,7 +85,11 @@ predictr <- function(model, X, hidden = FALSE, ...) {
     a = array(X[j,,],dim=c(dim(X)[2],input_dim))
     
     
-    layer_1_values = matrix(0, nrow=1, ncol = hidden_dim)
+    # store the hidden layers values for each time step, needed in parallel of store because we need the t(-1) hidden states. otherwise, we could take the values from the store list
+    layers_values  = list()
+    for(i in seq(length(synapse_dim) - 2)){
+      layers_values[[i]] <- matrix(0,nrow=1, ncol = synapse_dim[i+1])
+    }
     
     # time index vector, needed because we predict in one direction but update the weight in an other
     if(start_from_end == T){
@@ -101,33 +106,37 @@ predictr <- function(model, X, hidden = FALSE, ...) {
       # generate input and output
       x = a[position,]
       
-      # hidden layer (input ~+ prev_hidden)
-      layer_1 = sigmoid::sigmoid((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h), ...)
-      
-      # output layer (new binary representation)
-      layer_2 = sigmoid::sigmoid(layer_1 %*% synapse_1, ...)
-      
-      # storing
-      store_output[j,position,] = layer_2
-      store_hidden[j,position,] = layer_1
-      
-      # store hidden layer so we can print it out. Needed for error calculation and weight iteration
-      layer_1_values = rbind(layer_1_values, layer_1)
-      
+      layers <- list()
+      for(i in seq(length(synapse_dim) - 1)){
+        if(i == 1){ # first hidden layer, need to take x as input
+          layers[[i]] <- sigmoid::logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+        }
+        if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+          layers[[i]] <- sigmoid::logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+        }
+        if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
+          layers[[i]] <- sigmoid::logistic(layers[[i-1]] %*% time_synapse[[i]])
+        }
+        # storing
+        store[[i]][j,position,] = layers[[i]]
+        if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
+          # store hidden layers so we can print it out. Needed for error calculation and weight iteration
+          layers_values[[i]] = rbind(layers_values[[i]], layers[[i]])
+        }
+      }
     }
   }
-
+  # convert output to matrix if 2 dimensional
+    if(dim(store[[length(store)]])[3]==1) {
+      store[[length(store)]] <- matrix(store[[length(store)]],
+                       nrow = dim(store[[length(store)]])[1],
+                       ncol = dim(store[[length(store)]])[2])  
+      }
   
   # return output vector
-  if(hidden == FALSE){
-    # convert to matrix if 2 dimensional
-    if(dim(store_output)[3]==1) {
-      store_output <- matrix(store_output,
-                       nrow = dim(store_output)[1],
-                       ncol = dim(store_output)[2])  }
-    # return output
-    return(store_output)
-  }else{
-    return(store_hidden)
+  if(hidden == FALSE){ # return only the last ele;ent of the list, i.e. the output
+    return(store[[length(store)]])
+  }else{ # return everything
+    return(store)
   }
 }

@@ -8,7 +8,7 @@
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param learningrate learning rate to be applied for weight iteration
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
-#' @param hidden_dim dimension of hidden layer
+#' @param hidden_dim dimension(s) of hidden layer(s)
 #' @param start_from_end should the sequence start from the end
 #' @param learningrate_decay coefficient to apply to the learning rate at each weight iteration
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
@@ -37,7 +37,7 @@
 #'                 start_from_end = TRUE )
 #'     
 
-trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim, numepochs = 1, start_from_end=FALSE) {
+trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, start_from_end=FALSE) {
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -58,27 +58,30 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   # extract the network dimensions
   input_dim = dim(X)[3]
   output_dim = dim(Y)[3]
+  synapse_dim = c(input_dim,hidden_dim,output_dim)
   binary_dim = dim(X)[2]
   
-  # initialize neural network weights
-  synapse_0 = matrix(stats::runif(n = input_dim*hidden_dim, min=-1, max=1), nrow=input_dim)
-  synapse_1 = matrix(stats::runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
-  synapse_h = matrix(stats::runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
+  #initialize neural network weights, stored in two lists
+  time_synapse      = list() # synapse in a time step, link input to hidden, hidden to hidden, hidden to output
+  recurrent_synapse = list() # synapse between time step, link hidden to hidden
+  for(i in seq(length(synapse_dim) - 1)){
+    time_synapse[[i]] <- matrix(stats::runif(n = synapse_dim[i]*synapse_dim[i+1], min=-1, max=1), nrow=synapse_dim[i])
+  }
+  for(i in seq(length(hidden_dim))){
+    recurrent_synapse[[i]] <- matrix(stats::runif(n = hidden_dim[i]*hidden_dim[i], min=-1, max=1), nrow=hidden_dim[i])
+  }
   
-  # initialize the update
-  synapse_0_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
-  synapse_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
-  synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
+  # initialize the update, stored in two lists
+  time_synapse_update = time_synapse
+  time_synapse_update = lapply(time_synapse_update,function(x){x*0})
+  recurrent_synapse_update = recurrent_synapse
+  recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x*0})
   
-  # initialize the old update for the momentum
-  synapse_0_old_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
-  synapse_1_old_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
-  synapse_h_old_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
-
-  
-  # Storing layers states
-  store_output <- array(0,dim = dim(Y))
-  store_hidden <- array(0,dim = c(dim(Y)[1:2],hidden_dim))
+  # Storing layers states, filled with 0 for the moment
+  store <- list()
+  for(i in seq(length(synapse_dim) - 1)){
+    store[[i]] <- array(0,dim = c(dim(Y)[1:2],synapse_dim[i+1]))
+  }
   
   # Storing errors, dim 1: samples, dim 2 is epochs, we could store also the time and variable dimension
   error <- array(0,dim = c(dim(Y)[1],numepochs))
@@ -97,8 +100,11 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       overallError = 0
       
       layer_2_deltas = matrix(0,nrow=1, ncol = output_dim)
-      layer_1_values = matrix(0, nrow=1, ncol = hidden_dim)
-      # layer_1_values = rbind(layer_1_values, matrix(0, nrow=1, ncol=hidden_dim))
+      # store the hidden layers values for each time step, needed in parallel of store because we need the t(-1) hidden states. otherwise, we could take the values from the store list
+      layers_values  = list()
+      for(i in seq(length(synapse_dim) - 2)){
+        layers_values[[i]] <- matrix(0,nrow=1, ncol = synapse_dim[i+1])
+      }
       
       # time index vector, needed because we predict in one direction but update the weight in an other
       if(start_from_end == TRUE) {
@@ -116,92 +122,99 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         x = a[position,]
         y = c[position,]
         
-        # hidden layer (input ~+ prev_hidden)
-        layer_1 = sigmoid::logistic((x%*%synapse_0) + (layer_1_values[dim(layer_1_values)[1],] %*% synapse_h))
-        
-        # output layer (new binary representation)
-        layer_2 = sigmoid::logistic(layer_1 %*% synapse_1)
+        layers <- list()
+        for(i in seq(length(synapse_dim) - 1)){
+          if(i == 1){ # first hidden layer, need to take x as input
+            layers[[i]] <- sigmoid::logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+          }
+          if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+            layers[[i]] <- sigmoid::logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+          }
+          if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
+            layers[[i]] <- sigmoid::logistic(layers[[i-1]] %*% time_synapse[[i]])
+          }
+          # storing
+          store[[i]][j,position,] = layers[[i]]
+          if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
+            # store hidden layers so we can print it out. Needed for error calculation and weight iteration
+            layers_values[[i]] = rbind(layers_values[[i]], layers[[i]])
+          }
+        }
         
         # did we miss?... if so, by how much?
-        layer_2_error = y - layer_2
-        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid::sigmoid_output_to_derivative(layer_2))
+        layer_2_error = y - layers[[length(synapse_dim) - 1]]
+        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid::sigmoid_output_to_derivative(layers[[length(synapse_dim) - 1]]))
         overallError = overallError + sum(abs(layer_2_error))
-        
-        # storing
-        store_output[j,position,] = layer_2
-        store_hidden[j,position,] = layer_1
-        
-        # store hidden layer so we can print it out. Needed for error calculation and weight iteration
-        layer_1_values = rbind(layer_1_values, layer_1)
         
       }
       
       # store errors
       error[j,epoch] <- overallError
       
-      future_layer_1_delta = matrix(0, nrow = 1, ncol = hidden_dim)
+      future_layer_delta  = list()
+      for(i in seq(length(synapse_dim) - 2)){
+        future_layer_delta[[i]] <- matrix(0,nrow=1, ncol = synapse_dim[i+1])
+      }
       
       # Weight iteration,
       for (position in 0:(binary_dim-1)) {
         
+        # input states
         x            = a[pos_vec_back[position+1],]
-        layer_1      = layer_1_values[dim(layer_1_values)[1]-position,]
-        prev_layer_1 = layer_1_values[dim(layer_1_values)[1]-(position+1),]
-        
         # error at output layer
-        layer_2_delta = layer_2_deltas[dim(layer_2_deltas)[1]-position,]
-        # error at hidden layer
-        layer_1_delta = (future_layer_1_delta %*% t(synapse_h) + layer_2_delta %*% t(synapse_1)) *
-          sigmoid::sigmoid_output_to_derivative(layer_1)
+        layer_up_delta = layer_2_deltas[dim(layer_2_deltas)[1]-position,]
         
-        # let's update all our weights so we can try again
-        synapse_1_update = synapse_1_update + matrix(layer_1) %*% layer_2_delta
-        synapse_h_update = synapse_h_update + matrix(prev_layer_1) %*% layer_1_delta
-        synapse_0_update = synapse_0_update + c(x) %*% layer_1_delta # I had to change X as a vector as it is not a matrix anymore, other option, define it as a matrix of dim()=c(1,input_dim)
-        
-        future_layer_1_delta = layer_1_delta
+        for(i in (length(synapse_dim) - 1):1){
+          if(i != 1){ # need update for time and recurrent synapse
+            layer_current      = layers_values[[i-1]][dim(layers_values[[i-1]])[1]-position,]
+            prev_layer_current = layers_values[[i-1]][dim(layers_values[[i-1]])[1]-(position+1),]
+            # error at hidden layers
+            layer_current_delta = (future_layer_delta[[i-1]] %*% t(recurrent_synapse[[i-1]]) + layer_up_delta %*% t(time_synapse[[i]])) *
+              sigmoid::sigmoid_output_to_derivative(layer_current)
+            time_synapse_update[[i]] = time_synapse_update[[i]] + matrix(layer_current) %*% layer_up_delta
+            recurrent_synapse_update[[i-1]] = recurrent_synapse_update[[i-1]] + matrix(prev_layer_current) %*% layer_current_delta
+            layer_up_delta = layer_current_delta
+            future_layer_delta[[i-1]] = layer_current_delta
+          }else{ # need only update for time synapse
+            time_synapse_update[[i]] = time_synapse_update[[i]] + c(x) %*% layer_up_delta
+          }
+        }
       }
       
-      # Calculate the real update including learning rate and momentum
-      synapse_0_update = synapse_0_update * learningrate + synapse_0_old_update * momentum
-      synapse_1_update = synapse_1_update * learningrate + synapse_1_old_update * momentum
-      synapse_h_update = synapse_h_update * learningrate + synapse_h_old_update * momentum
+      
+      
+      # Calculate the real update including learning rate
+      time_synapse_update = lapply(time_synapse_update,function(x){x* learningrate})
+      recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x* learningrate})
       
       # Applying the update
-      synapse_0 = synapse_0 + synapse_0_update
-      synapse_1 = synapse_1 + synapse_1_update
-      synapse_h = synapse_h + synapse_h_update
+      for(i in seq(length(synapse_dim) - 1)){
+        time_synapse[[i]] <- time_synapse[[i]] + time_synapse_update[[i]]
+      }
+      for(i in seq(length(hidden_dim))){
+        recurrent_synapse[[i]] <- recurrent_synapse[[i]] + recurrent_synapse_update[[i]]
+      }
       
       # Update the learning rate
       learningrate <- learningrate * learningrate_decay
       
-      # Storing the old update for next momentum
-      synapse_0_old_update = synapse_0_update
-      synapse_1_old_update = synapse_1_update
-      synapse_h_old_update = synapse_h_update
-      
-      # Initializing the update
-      synapse_0_update = synapse_0_update * 0
-      synapse_1_update = synapse_1_update * 0
-      synapse_h_update = synapse_h_update * 0
+      # Initializing the update with the momentum
+      time_synapse_update = lapply(time_synapse_update,function(x){x* momentum})
+      recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x* momentum})
     }
     # update best guess if error is minimal
     if(colMeans(error)[epoch] <= min(colMeans(error)[1:epoch])){
-      store_output_best <- store_output
-      store_hidden_best <- store_hidden
+      store_best <- store
     }
     message(paste0("Epoch error: ",colMeans(error)[epoch]))
   }
   
   # create utput object
-  output=list(synapse_0         = synapse_0,
-              synapse_1         = synapse_1,
-              synapse_h         = synapse_h,
+  output=list(time_synapse      = time_synapse,
+              recurrent_synapse = recurrent_synapse,
               error             = error,
-              store_output      = store_output,
-              store_hidden      = store_hidden,
-              store_hidden_best = store_hidden_best,
-              store_output_best = store_output_best,
+              store             = store,
+              store_best        = store_best,
               start_from_end    = start_from_end)
   
   attr(output, 'error') <- colMeans(error)
