@@ -11,4 +11,3 @@ vignettes/*.html
 vignettes/*.pdf
 .Rproj.user
 inst/doc
-vignettes/synthetic-mld.Rmd

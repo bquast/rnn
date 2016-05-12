@@ -75,7 +75,7 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   
   store <- list()
   for(i in seq(length(synapse_dim) - 1)){
-    store[[i]] <- array(0,dim = c(dim(Y)[1:2],synapse_dim[i+1]))
+    store[[i]] <- array(0,dim = c(dim(X)[1:2],synapse_dim[i+1]))
   }
   
   
