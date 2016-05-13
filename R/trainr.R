@@ -65,10 +65,10 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   time_synapse      = list() # synapse in a time step, link input to hidden, hidden to hidden, hidden to output
   recurrent_synapse = list() # synapse between time step, link hidden to hidden
   for(i in seq(length(synapse_dim) - 1)){
-    time_synapse[[i]] <- matrix(stats::runif(n = synapse_dim[i]*synapse_dim[i+1], min=-1, max=1), nrow=synapse_dim[i])
+    time_synapse[[i]] <- matrix(runif(n = synapse_dim[i]*synapse_dim[i+1], min=-1, max=1), nrow=synapse_dim[i])
   }
   for(i in seq(length(hidden_dim))){
-    recurrent_synapse[[i]] <- matrix(stats::runif(n = hidden_dim[i]*hidden_dim[i], min=-1, max=1), nrow=hidden_dim[i])
+    recurrent_synapse[[i]] <- matrix(runif(n = hidden_dim[i]*hidden_dim[i], min=-1, max=1), nrow=hidden_dim[i])
   }
   
   # initialize the update, stored in two lists
@@ -125,13 +125,13 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         layers <- list()
         for(i in seq(length(synapse_dim) - 1)){
           if(i == 1){ # first hidden layer, need to take x as input
-            layers[[i]] <- sigmoid::logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+            layers[[i]] <- logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
           }
           if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-            layers[[i]] <- sigmoid::logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+            layers[[i]] <- logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
           }
           if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
-            layers[[i]] <- sigmoid::logistic(layers[[i-1]] %*% time_synapse[[i]])
+            layers[[i]] <- logistic(layers[[i-1]] %*% time_synapse[[i]])
           }
           # storing
           store[[i]][j,position,] = layers[[i]]
@@ -143,7 +143,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layers[[length(synapse_dim) - 1]]
-        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid::sigmoid_output_to_derivative(layers[[length(synapse_dim) - 1]]))
+        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid_output_to_derivative(layers[[length(synapse_dim) - 1]]))
         overallError = overallError + sum(abs(layer_2_error))
         
       }
@@ -170,7 +170,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
             prev_layer_current = layers_values[[i-1]][dim(layers_values[[i-1]])[1]-(position+1),]
             # error at hidden layers
             layer_current_delta = (future_layer_delta[[i-1]] %*% t(recurrent_synapse[[i-1]]) + layer_up_delta %*% t(time_synapse[[i]])) *
-              sigmoid::sigmoid_output_to_derivative(layer_current)
+              sigmoid_output_to_derivative(layer_current)
             time_synapse_update[[i]] = time_synapse_update[[i]] + matrix(layer_current) %*% layer_up_delta
             recurrent_synapse_update[[i-1]] = recurrent_synapse_update[[i-1]] + matrix(prev_layer_current) %*% layer_current_delta
             layer_up_delta = layer_current_delta
