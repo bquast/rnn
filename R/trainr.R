@@ -124,15 +124,14 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         
         layers <- list()
         for(i in seq(length(synapse_dim) - 1)){
-          if(i == 1){ # first hidden layer, need to take x as input
+          if (i == 1) { # first hidden layer, need to take x as input
             layers[[i]] <- logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
-          }
-          if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+          } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
             layers[[i]] <- logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
-          }
-          if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
+          } else { # output layer depend only of the hidden layer of bellow
             layers[[i]] <- logistic(layers[[i-1]] %*% time_synapse[[i]])
           }
+          
           # storing
           store[[i]][j,position,] = layers[[i]]
           if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
