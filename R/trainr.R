@@ -1,7 +1,7 @@
 #' @name trainr
 #' @export
 #' @importFrom stats runif
-#' @importFrom sigmoid logistic sigmoid_output_to_derivative
+#' @importFrom sigmoid sigmoid sigmoid_output_to_derivative
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
@@ -37,7 +37,10 @@
 #'                 start_from_end = TRUE )
 #'     
 
-trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, start_from_end=FALSE) {
+trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE) {
+  
+  #  find sigmoid
+  sigmoid <- match.arg(sigmoid)
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -125,11 +128,11 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         layers <- list()
         for(i in seq(length(synapse_dim) - 1)){
           if (i == 1) { # first hidden layer, need to take x as input
-            layers[[i]] <- logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+            layers[[i]] <- sigmoid((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]), method=sigmoid)
           } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-            layers[[i]] <- logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+            layers[[i]] <- sigmoid((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]), method=sigmoid)
           } else { # output layer depend only of the hidden layer of bellow
-            layers[[i]] <- logistic(layers[[i-1]] %*% time_synapse[[i]])
+            layers[[i]] <- sigmoid(layers[[i-1]] %*% time_synapse[[i]], method=sigmoid)
           }
           
           # storing
