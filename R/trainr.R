@@ -9,6 +9,7 @@
 #' @param learningrate learning rate to be applied for weight iteration
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension(s) of hidden layer(s)
+#' @param sigmoid method to be passed on the to the sigmoid function
 #' @param start_from_end should the sequence start from the end
 #' @param learningrate_decay coefficient to apply to the learning rate at each weight iteration
 #' @param momentum coefficient of the last weight iteration to keep for faster learning

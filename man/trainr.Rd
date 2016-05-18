@@ -23,6 +23,8 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{numepochs}{number of iteration, i.e. number of time the whole dataset is presented to the network}
 
+\item{sigmoid}{method to be passed on the to the sigmoid function}
+
 \item{start_from_end}{should the sequence start from the end}
 }
 \value{
