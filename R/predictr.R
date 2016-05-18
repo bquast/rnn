@@ -64,8 +64,15 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   
   # load neural network weights
   time_synapse      = model$time_synapse
+  if("bias_synapse" %in% names(model)){
+    use_bias          = T
+    bias_synapse      = model$bias_synapse
+  }else{
+    use_bias          = F
+  }
   recurrent_synapse = model$recurrent_synapse
   start_from_end    = model$start_from_end
+  sigmoid           = model$sigmoid
   
   # extract the network dimensions, only the binary dim
   input_dim         = dim(time_synapse[[1]])[1]
@@ -108,15 +115,19 @@ predictr <- function(model, X, hidden = FALSE, ...) {
       
       layers <- list()
       for(i in seq(length(synapse_dim) - 1)){
-        if(i == 1){ # first hidden layer, need to take x as input
-          layers[[i]] <- sigmoid::logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+        if (i == 1) { # first hidden layer, need to take x as input
+          layers[[i]] <- (x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
+        } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+          layers[[i]] <- (layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
+        } else { # output layer depend only of the hidden layer of bellow
+          layers[[i]] <- layers[[i-1]] %*% time_synapse[[i]]
         }
-        if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-          layers[[i]] <- sigmoid::logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+        if(use_bias == T){ # apply the bias if applicable
+          layers[[i]] <- layers[[i]] + bias_synapse[[i]]
         }
-        if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
-          layers[[i]] <- sigmoid::logistic(layers[[i-1]] %*% time_synapse[[i]])
-        }
+        # apply the activation function
+        layers[[i]] <- sigmoid(layers[[i]], method=sigmoid)
+        
         # storing
         store[[i]][j,position,] = layers[[i]]
         if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list

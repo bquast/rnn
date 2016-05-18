@@ -1,7 +1,7 @@
 #' @name trainr
 #' @export
 #' @importFrom stats runif
-#' @importFrom sigmoid logistic sigmoid_output_to_derivative
+#' @importFrom sigmoid sigmoid sigmoid_output_to_derivative
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
@@ -9,9 +9,11 @@
 #' @param learningrate learning rate to be applied for weight iteration
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension(s) of hidden layer(s)
+#' @param sigmoid method to be passed on the to the sigmoid function
 #' @param start_from_end should the sequence start from the end
 #' @param learningrate_decay coefficient to apply to the learning rate at each weight iteration
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
+#' @param use_bias should the network use bias
 #' @return a model to be used by the predictr function
 #' @examples 
 #' # create training numbers
@@ -37,7 +39,10 @@
 #'                 start_from_end = TRUE )
 #'     
 
-trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, start_from_end=FALSE) {
+trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE, use_bias = F) {
+  
+  #  find sigmoid
+  sigmoid <- match.arg(sigmoid)
   
   # check the consistency
   if(dim(X)[2] != dim(Y)[2]){
@@ -65,17 +70,20 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   time_synapse      = list() # synapse in a time step, link input to hidden, hidden to hidden, hidden to output
   recurrent_synapse = list() # synapse between time step, link hidden to hidden
   for(i in seq(length(synapse_dim) - 1)){
-    time_synapse[[i]] <- matrix(stats::runif(n = synapse_dim[i]*synapse_dim[i+1], min=-1, max=1), nrow=synapse_dim[i])
+    time_synapse[[i]] <- matrix(runif(n = synapse_dim[i]*synapse_dim[i+1], min=-1, max=1), nrow=synapse_dim[i])
   }
   for(i in seq(length(hidden_dim))){
-    recurrent_synapse[[i]] <- matrix(stats::runif(n = hidden_dim[i]*hidden_dim[i], min=-1, max=1), nrow=hidden_dim[i])
+    recurrent_synapse[[i]] <- matrix(runif(n = hidden_dim[i]*hidden_dim[i], min=-1, max=1), nrow=hidden_dim[i])
+  }
+  bias_synapse      = list() # bias for each unit, we calculate them anyway, for the moment, there is 2 if statement where we check it, the state calcul and the output object
+  for(i in seq(length(synapse_dim) - 1)){
+    bias_synapse[[i]] <- runif(synapse_dim[i+1],min=-0.1,max=0.1)
   }
   
   # initialize the update, stored in two lists
-  time_synapse_update = time_synapse
-  time_synapse_update = lapply(time_synapse_update,function(x){x*0})
-  recurrent_synapse_update = recurrent_synapse
-  recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x*0})
+  time_synapse_update = lapply(time_synapse,function(x){x*0})
+  bias_synapse_update = lapply(bias_synapse,function(x){x*0})
+  recurrent_synapse_update = lapply(recurrent_synapse,function(x){x*0})
   
   # Storing layers states, filled with 0 for the moment
   store <- list()
@@ -124,15 +132,19 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         
         layers <- list()
         for(i in seq(length(synapse_dim) - 1)){
-          if(i == 1){ # first hidden layer, need to take x as input
-            layers[[i]] <- sigmoid::logistic((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+          if (i == 1) { # first hidden layer, need to take x as input
+            layers[[i]] <- (x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
+          } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+            layers[[i]] <- (layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
+          } else { # output layer depend only of the hidden layer of bellow
+            layers[[i]] <- layers[[i-1]] %*% time_synapse[[i]]
           }
-          if(i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-            layers[[i]] <- sigmoid::logistic((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]))
+          if(use_bias == T){ # apply the bias if applicable
+            layers[[i]] <- layers[[i]] + bias_synapse[[i]]
           }
-          if(i == length(synapse_dim) - 1){ # output layer depend only of the hidden layer of bellow
-            layers[[i]] <- sigmoid::logistic(layers[[i-1]] %*% time_synapse[[i]])
-          }
+          # apply the activation function
+          layers[[i]] <- sigmoid(layers[[i]], method=sigmoid)
+          
           # storing
           store[[i]][j,position,] = layers[[i]]
           if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
@@ -143,7 +155,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         
         # did we miss?... if so, by how much?
         layer_2_error = y - layers[[length(synapse_dim) - 1]]
-        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid::sigmoid_output_to_derivative(layers[[length(synapse_dim) - 1]]))
+        layer_2_deltas = rbind(layer_2_deltas, layer_2_error * sigmoid_output_to_derivative(layers[[length(synapse_dim) - 1]]))
         overallError = overallError + sum(abs(layer_2_error))
         
       }
@@ -162,7 +174,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         # input states
         x            = a[pos_vec_back[position+1],]
         # error at output layer
-        layer_up_delta = layer_2_deltas[dim(layer_2_deltas)[1]-position,]
+        layer_up_delta = array(layer_2_deltas[dim(layer_2_deltas)[1]-position,],dim=c(1,output_dim)) # arrray dimension because of bias colMeans function on layer_up_delta
         
         for(i in (length(synapse_dim) - 1):1){
           if(i != 1){ # need update for time and recurrent synapse
@@ -170,8 +182,9 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
             prev_layer_current = layers_values[[i-1]][dim(layers_values[[i-1]])[1]-(position+1),]
             # error at hidden layers
             layer_current_delta = (future_layer_delta[[i-1]] %*% t(recurrent_synapse[[i-1]]) + layer_up_delta %*% t(time_synapse[[i]])) *
-              sigmoid::sigmoid_output_to_derivative(layer_current)
+              sigmoid_output_to_derivative(layer_current)
             time_synapse_update[[i]] = time_synapse_update[[i]] + matrix(layer_current) %*% layer_up_delta
+            bias_synapse_update[[i]] = bias_synapse_update[[i]] + colMeans(layer_up_delta)
             recurrent_synapse_update[[i-1]] = recurrent_synapse_update[[i-1]] + matrix(prev_layer_current) %*% layer_current_delta
             layer_up_delta = layer_current_delta
             future_layer_delta[[i-1]] = layer_current_delta
@@ -185,11 +198,13 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       
       # Calculate the real update including learning rate
       time_synapse_update = lapply(time_synapse_update,function(x){x* learningrate})
+      bias_synapse_update = lapply(bias_synapse_update,function(x){x* learningrate})
       recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x* learningrate})
       
       # Applying the update
       for(i in seq(length(synapse_dim) - 1)){
         time_synapse[[i]] <- time_synapse[[i]] + time_synapse_update[[i]]
+        bias_synapse[[i]] <- bias_synapse[[i]] + bias_synapse_update[[i]]
       }
       for(i in seq(length(hidden_dim))){
         recurrent_synapse[[i]] <- recurrent_synapse[[i]] + recurrent_synapse_update[[i]]
@@ -200,6 +215,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       
       # Initializing the update with the momentum
       time_synapse_update = lapply(time_synapse_update,function(x){x* momentum})
+      bias_synapse_update = lapply(bias_synapse_update,function(x){x* momentum})
       recurrent_synapse_update = lapply(recurrent_synapse_update,function(x){x* momentum})
     }
     # update best guess if error is minimal
@@ -215,10 +231,14 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
               error             = error,
               store             = store,
               store_best        = store_best,
-              start_from_end    = start_from_end)
+              start_from_end    = start_from_end,
+              sigmoid           = sigmoid)
   
   attr(output, 'error') <- colMeans(error)
   
+  if(use_bias == T){ # append bias_synapse if applicable
+    output$bias_synapse          =  bias_synapse
+  }
   
   # return output
   return(output)

@@ -21,9 +21,11 @@ Y <- array( Y, dim=c(dim(Y),1) )
 model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
-                hidden_dim     = 10,
-                numepochs      = 10,
+                hidden_dim     =  c(10,10),
+                numepochs      =  2,
                 start_from_end = TRUE )
+
+set.seed(1) # need a new seed as RNG as moved during trainr because of bias generation, in order to compare before after the bias implementation
 
 # create test inputs
 A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
@@ -33,8 +35,7 @@ A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
 A <- array( c(A1,A2), dim=c(dim(A1),2) )
 
 # predict
-B  <- predictr(model,
-               A     )
+B  <- predictr(model, A)
 
 # inspect the differences              
-expect_equal(sum(bin2int(B)), 886614)
+expect_equal(sum(bin2int(B)), 888626)

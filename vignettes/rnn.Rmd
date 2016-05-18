@@ -26,7 +26,7 @@ We can view the code of the main `rnn()` function by calling it without the para
 trainr
 ```
 
-As can be seen from the above, the model relies on two other functions that are available trough the `sigmoid` package.
+As can be seen from the above, the model relies on two other functions that are available through the `sigmoid` package.
 
 The first function is `logistic()`, which converts an integer to its sigmoid value.
 
