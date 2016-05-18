@@ -40,7 +40,7 @@
 #'     
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10), numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE, use_bias = F) {
-
+  
   #  find sigmoid
   sigmoid <- match.arg(sigmoid)
   
@@ -133,13 +133,18 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
         layers <- list()
         for(i in seq(length(synapse_dim) - 1)){
           if (i == 1) { # first hidden layer, need to take x as input
-            layers[[i]] <- sigmoid((x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]), method=sigmoid)
+            layers[[i]] <- (x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
           } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-            layers[[i]] <- sigmoid((layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]]), method=sigmoid)
+            layers[[i]] <- (layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
           } else { # output layer depend only of the hidden layer of bellow
-            layers[[i]] <- sigmoid(layers[[i-1]] %*% time_synapse[[i]], method=sigmoid)
+            layers[[i]] <- layers[[i-1]] %*% time_synapse[[i]]
           }
-
+          if(use_bias == T){ # apply the bias if applicable
+            layers[[i]] <- layers[[i]] + bias_synapse[[i]]
+          }
+          # apply the activation function
+          layers[[i]] <- sigmoid(layers[[i]], method=sigmoid)
+          
           # storing
           store[[i]][j,position,] = layers[[i]]
           if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list

@@ -38,8 +38,4 @@ A <- array( c(A1,A2), dim=c(dim(A1),2) )
 B  <- predictr(model, A)
 
 # inspect the differences              
-<<<<<<< HEAD
 expect_equal(sum(bin2int(B)), 888626)
-=======
-expect_equal(sum(bin2int(B)), 886211)
->>>>>>> a4cb1118c0be4c16286a492c05a132a4c2603726

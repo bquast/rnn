@@ -6,11 +6,7 @@
 \usage{
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), numepochs = 1, sigmoid = c("logistic", "Gompertz",
-<<<<<<< HEAD
   "tanh"), start_from_end = FALSE, use_bias = F)
-=======
-  "tanh"), start_from_end = FALSE)
->>>>>>> a4cb1118c0be4c16286a492c05a132a4c2603726
 }
 \arguments{
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
