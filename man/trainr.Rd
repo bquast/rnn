@@ -6,7 +6,7 @@
 \usage{
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), numepochs = 1, sigmoid = c("logistic", "Gompertz",
-  "tanh"), start_from_end = FALSE)
+  "tanh"), start_from_end = FALSE, use_bias = F)
 }
 \arguments{
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
@@ -26,6 +26,8 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 \item{sigmoid}{method to be passed on the to the sigmoid function}
 
 \item{start_from_end}{should the sequence start from the end}
+
+\item{use_bias}{should the network use bias}
 }
 \value{
 a model to be used by the predictr function
