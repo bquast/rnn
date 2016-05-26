@@ -1,10 +1,10 @@
 ---
 title: "Sinus and Cosinus"
-author: "Vignette Author"
+author: "Dimitri Fichou"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Recurrent Neural Network}
+  %\VignetteIndexEntry{sinus}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
