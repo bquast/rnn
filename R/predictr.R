@@ -62,22 +62,10 @@ predictr <- function(model, X, hidden = FALSE, ...) {
     X <- array(X,dim=c(dim(X),1))
   }
   
-  # load neural network weights
-  time_synapse      = model$time_synapse
-  if("bias_synapse" %in% names(model)){
-    use_bias          = T
-    bias_synapse      = model$bias_synapse
-  }else{
-    use_bias          = F
-  }
-  recurrent_synapse = model$recurrent_synapse
-  start_from_end    = model$start_from_end
-  sigmoid           = model$sigmoid
-  
   # extract the network dimensions, only the binary dim
-  input_dim         = dim(time_synapse[[1]])[1]
-  output_dim        = dim(time_synapse[[length(time_synapse)]])[2]
-  synapse_dim        = c(unlist(lapply(time_synapse,function(x){dim(x)[1]})),output_dim)
+  input_dim         = dim(model$time_synapse[[1]])[1]
+  output_dim        = dim(model$time_synapse[[length(model$time_synapse)]])[2]
+  synapse_dim        = c(unlist(lapply(model$time_synapse,function(x){dim(x)[1]})),output_dim)
   binary_dim         = dim(X)[2]
   
   store <- list()
@@ -85,67 +73,56 @@ predictr <- function(model, X, hidden = FALSE, ...) {
     store[[i]] <- array(0,dim = c(dim(X)[1:2],synapse_dim[i+1]))
   }
   
+  # store the hidden layers values for each time step, needed in parallel of store because we need the t(-1) hidden states. otherwise, we could take the values from the store list
+  layers_values  = list()
+  for(i in seq(length(synapse_dim) - 2)){
+    layers_values[[i]] <- matrix(0,nrow=dim(X)[1], ncol = synapse_dim[i+1])
+  }
   
-  for (j in 1:dim(X)[1]) {
+  # time index vector, needed because we predict in one direction but update the weight in an other
+  if(model$start_from_end == T){
+    pos_vec <- binary_dim:1
+    pos_vec_back <- 1:binary_dim
+  }else{
+    pos_vec <- 1:binary_dim
+    pos_vec_back <- binary_dim:1
+  }
+  
+  for (position in pos_vec) {
     
-    # generate a simple addition problem (a + b = c)
-    a = array(X[j,,],dim=c(dim(X)[2],input_dim))
+    # generate input and output
+    x = array(X[,position,],dim=dim(X)[c(1,3)])
     
-    
-    # store the hidden layers values for each time step, needed in parallel of store because we need the t(-1) hidden states. otherwise, we could take the values from the store list
-    layers_values  = list()
-    for(i in seq(length(synapse_dim) - 2)){
-      layers_values[[i]] <- matrix(0,nrow=1, ncol = synapse_dim[i+1])
-    }
-    
-    # time index vector, needed because we predict in one direction but update the weight in an other
-    if(start_from_end == T){
-      pos_vec <- binary_dim:1
-      pos_vec_back <- 1:binary_dim
-    }else{
-      pos_vec <- 1:binary_dim
-      pos_vec_back <- binary_dim:1
-    }
-    
-    # moving along the time
-    for (position in pos_vec) {
+    for(i in seq(length(synapse_dim) - 1)){
+      if (i == 1) { # first hidden layer, need to take x as input
+        store[[i]][,position,] <- (x %*% model$time_synapse[[i]]) + (layers_values[[i]] %*% model$recurrent_synapse[[i]])
+      } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+        store[[i]][,position,] <- (store[[i-1]][,position,] %*% model$time_synapse[[i]]) + (layers_values[[i]] %*% model$recurrent_synapse[[i]])
+      } else { # output layer depend only of the hidden layer of bellow
+        store[[i]][,position,] <- store[[i-1]][,position,] %*% model$time_synapse[[i]]
+      }
+      if("bias_synapse" %in% names(model)){ # apply the bias if applicable
+        store[[i]][,position,] <- store[[i]][,position,] + model$bias_synapse[[i]]
+      }
+      # apply the activation function
+      store[[i]][,position,] <- sigmoid(store[[i]][,position,], method=model$sigmoid)
       
-      # generate input and output
-      x = a[position,]
-      
-      layers <- list()
-      for(i in seq(length(synapse_dim) - 1)){
-        if (i == 1) { # first hidden layer, need to take x as input
-          layers[[i]] <- (x%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
-        } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
-          layers[[i]] <- (layers[[i-1]]%*%time_synapse[[i]]) + (layers_values[[i]][dim(layers_values[[i]])[1],] %*% recurrent_synapse[[i]])
-        } else { # output layer depend only of the hidden layer of bellow
-          layers[[i]] <- layers[[i-1]] %*% time_synapse[[i]]
-        }
-        if(use_bias == T){ # apply the bias if applicable
-          layers[[i]] <- layers[[i]] + bias_synapse[[i]]
-        }
-        # apply the activation function
-        layers[[i]] <- sigmoid(layers[[i]], method=sigmoid)
-        
-        # storing
-        store[[i]][j,position,] = layers[[i]]
-        if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
-          # store hidden layers so we can print it out. Needed for error calculation and weight iteration
-          layers_values[[i]] = rbind(layers_values[[i]], layers[[i]])
-        }
+      if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
+        # store hidden layers so we can print it out. Needed for error calculation and weight iteration
+        layers_values[[i]] = store[[i]][,position,]
       }
     }
   }
+  
   # convert output to matrix if 2 dimensional
-    if(dim(store[[length(store)]])[3]==1) {
-      store[[length(store)]] <- matrix(store[[length(store)]],
-                       nrow = dim(store[[length(store)]])[1],
-                       ncol = dim(store[[length(store)]])[2])  
-      }
+  if(dim(store[[length(store)]])[3]==1) {
+    store[[length(store)]] <- matrix(store[[length(store)]],
+                                     nrow = dim(store[[length(store)]])[1],
+                                     ncol = dim(store[[length(store)]])[2])  
+  }
   
   # return output vector
-  if(hidden == FALSE){ # return only the last ele;ent of the list, i.e. the output
+  if(hidden == FALSE){ # return only the last element of the list, i.e. the output
     return(store[[length(store)]])
   }else{ # return everything
     return(store)
