@@ -62,56 +62,55 @@ predictr <- function(model, X, hidden = FALSE, ...) {
     X <- array(X,dim=c(dim(X),1))
   }
   
-  # extract the network dimensions, only the binary dim
-  input_dim         = dim(model$time_synapse[[1]])[1]
-  output_dim        = dim(model$time_synapse[[length(model$time_synapse)]])[2]
-  synapse_dim        = c(unlist(lapply(model$time_synapse,function(x){dim(x)[1]})),output_dim)
-  binary_dim         = dim(X)[2]
+  # reverse the time dim if start from end
+  if(model$start_from_end){
+    X <- X[,dim(X)[2]:1,,drop = F]
+  }
   
   store <- list()
-  for(i in seq(length(synapse_dim) - 1)){
-    store[[i]] <- array(0,dim = c(dim(X)[1:2],synapse_dim[i+1]))
+  for(i in seq(length(model$synapse_dim) - 1)){
+    store[[i]] <- array(0,dim = c(dim(X)[1:2],model$synapse_dim[i+1]))
   }
   
   # store the hidden layers values for each time step, needed in parallel of store because we need the t(-1) hidden states. otherwise, we could take the values from the store list
   layers_values  = list()
-  for(i in seq(length(synapse_dim) - 2)){
-    layers_values[[i]] <- matrix(0,nrow=dim(X)[1], ncol = synapse_dim[i+1])
+  for(i in seq(length(model$synapse_dim) - 2)){
+    layers_values[[i]] <- matrix(0,nrow=dim(X)[1], ncol = model$synapse_dim[i+1])
   }
   
   # time index vector, needed because we predict in one direction but update the weight in an other
-  if(model$start_from_end == T){
-    pos_vec <- binary_dim:1
-    pos_vec_back <- 1:binary_dim
-  }else{
-    pos_vec <- 1:binary_dim
-    pos_vec_back <- binary_dim:1
-  }
+  pos_vec <- 1:model$time_dim
+  pos_vec_back <- model$time_dim:1
   
   for (position in pos_vec) {
     
-    # generate input and output
+    # generate input 
     x = array(X[,position,],dim=dim(X)[c(1,3)])
     
-    for(i in seq(length(synapse_dim) - 1)){
+    for(i in seq(length(model$synapse_dim) - 1)){
       if (i == 1) { # first hidden layer, need to take x as input
         store[[i]][,position,] <- (x %*% model$time_synapse[[i]]) + (layers_values[[i]] %*% model$recurrent_synapse[[i]])
-      } else if (i != length(synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
+      } else if (i != length(model$synapse_dim) - 1 & i != 1){ #hidden layers not linked to input layer, depends of the last time step
         store[[i]][,position,] <- (store[[i-1]][,position,] %*% model$time_synapse[[i]]) + (layers_values[[i]] %*% model$recurrent_synapse[[i]])
       } else { # output layer depend only of the hidden layer of bellow
         store[[i]][,position,] <- store[[i-1]][,position,] %*% model$time_synapse[[i]]
       }
-      if("bias_synapse" %in% names(model)){ # apply the bias if applicable
+      if(model$use_bias){ # apply the bias if applicable
         store[[i]][,position,] <- store[[i]][,position,] + model$bias_synapse[[i]]
       }
       # apply the activation function
       store[[i]][,position,] <- sigmoid(store[[i]][,position,], method=model$sigmoid)
       
-      if(i != length(synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
+      if(i != length(model$synapse_dim) - 1){ # for all hidden layers, we need the previous state, looks like we duplicate the values here, it is also in the store list
         # store hidden layers so we can print it out. Needed for error calculation and weight iteration
         layers_values[[i]] = store[[i]][,position,]
       }
     }
+  }
+  
+  # reverse the time dim if start from end
+  if(model$start_from_end){
+    store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
   }
   
   # convert output to matrix if 2 dimensional
