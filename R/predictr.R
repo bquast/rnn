@@ -55,7 +55,7 @@
 #' hist(  B-(A1+A2) )
 #' 
 
-predictr <- function(model, X, hidden = FALSE, ...) {
+predictr <- function(model, X, hidden = FALSE, real_output = T,...) {
   
   # coerce to array if matrix
   if(length(dim(X)) == 2){
@@ -113,12 +113,15 @@ predictr <- function(model, X, hidden = FALSE, ...) {
     store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
   }
   
-  # convert output to matrix if 2 dimensional
-  if(dim(store[[length(store)]])[3]==1) {
-    store[[length(store)]] <- matrix(store[[length(store)]],
-                                     nrow = dim(store[[length(store)]])[1],
-                                     ncol = dim(store[[length(store)]])[2])  
+  # convert output to matrix if 2 dimensional, real_output argument added if used inside trainr
+  if(real_output){
+    if(dim(store[[length(store)]])[3]==1) {
+      store[[length(store)]] <- matrix(store[[length(store)]],
+                                       nrow = dim(store[[length(store)]])[1],
+                                       ncol = dim(store[[length(store)]])[2])
+    }
   }
+  
   
   # return output vector
   if(hidden == FALSE){ # return only the last element of the list, i.e. the output
