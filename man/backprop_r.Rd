@@ -9,7 +9,11 @@ backprop_r(model, a, c, j, ...)
 \arguments{
 \item{model}{the output model object}
 
-\item{a}{the input of this learning batch, only one sample for the moment so batch is a little bit overrated}
+\item{a}{the input of this learning batch}
+
+\item{c}{the output of this learning batch}
+
+\item{j}{the indexes of the sample in the current batch}
 
 \item{...}{argument to be passed to method}
 }

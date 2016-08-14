@@ -98,6 +98,12 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$last_layer_error        = Y*0
   model$last_layer_delta        = Y*0
   
+  # Storing layers states, filled with 0 for the moment
+  model$store <- list()
+  for(i in seq(length(model$synapse_dim) - 1)){
+    model$store[[i]] <- array(0,dim = c(dim(Y)[1:2],model$synapse_dim[i+1]))
+  }
+  
   if(model$network_type == "rnn"){
     model <- init_rnn(model)
   }else{

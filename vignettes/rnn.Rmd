@@ -90,11 +90,12 @@ This example is:
 
 ```{r example}
 # train the model
-model <- trainr(Y=Y,
-                X=X,
+model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F], # we inverse the time dimension
+                X=X[,dim(X)[2]:1,,drop=F], # we inverse the time dimension
                 learningrate   =  0.1,
                 hidden_dim     = 10,
-                numepochs = 1,
+                batch_size = 100,
+                numepochs = 10,
                 start_from_end = TRUE )
 ```
 
@@ -122,7 +123,9 @@ Predict based on testing data.
 ```{r predictr}
 # predict
 B  <- predictr(model,
-               A     )
+               A[,dim(A)[2]:1,,drop=F]
+               )
+B = B[,dim(B)[2]:1]
 ```
 
 Test prediction against true values

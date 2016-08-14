@@ -41,11 +41,7 @@ init_rnn = function(model){
   model$bias_synapse_update = lapply(model$bias_synapse,function(x){x*0})
   model$recurrent_synapse_update = lapply(model$recurrent_synapse,function(x){x*0})
   
-  # Storing layers states, filled with 0 for the moment
-  model$store <- list()
-  for(i in seq(length(model$synapse_dim) - 1)){
-    model$store[[i]] <- array(0,dim = c(dim(Y)[1:2],model$synapse_dim[i+1]))
-  }
+  
   
   return(model)
 }

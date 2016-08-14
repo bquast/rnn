@@ -3,7 +3,9 @@
 #' @title backprop_r
 #' @description backpropagate the error in a model object
 #' @param model the output model object
-#' @param a the input of this learning batch, only one sample for the moment so batch is a little bit overrated
+#' @param a the input of this learning batch
+#' @param c the output of this learning batch
+#' @param j the indexes of the sample in the current batch
 #' @param ... argument to be passed to method
 #' @return the updated model
 
@@ -20,7 +22,9 @@ backprop_r = function(model,a,c,j,...){
 #' @title backprop_rnn
 #' @description backpropagate the error in a model object of type rnn
 #' @param model the output model object
-#' @param a the input of this learning batch, only one sample for the moment so batch is a little bit overrated
+#' @param a the input of this learning batch
+#' @param c the output of this learning batch
+#' @param j the indexes of the sample in the current batch
 #' @param ... argument to be passed to method
 #' @return the updated model
 
