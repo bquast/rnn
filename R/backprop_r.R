@@ -25,7 +25,7 @@ backprop_r = function(model,a,c,j,...){
 #' @return the updated model
 
 backprop_rnn = function(model,a,c,j,...){
-  
+
   # store errors
   model$last_layer_error[j,,] = c - model$store[[length(model$store)]][j,,,drop=F]
   model$last_layer_delta[j,,] = model$last_layer_error[j,,,drop = F] * sigmoid_output_to_derivative(model$store[[length(model$store)]][j,,,drop=F])
@@ -41,7 +41,7 @@ backprop_rnn = function(model,a,c,j,...){
   for (position in model$time_dim:1) {
     
     # input states
-    x            = array(X[j,position,],dim=c(length(j),model$input_dim))
+    x            = array(a[,position,],dim=c(length(j),model$input_dim))
     # error at output layer
     layer_up_delta = array(model$last_layer_delta[j,position,],dim=c(length(j),model$output_dim))
 

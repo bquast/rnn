@@ -12,7 +12,7 @@
 #' @param network_type type of network, could be rnn or lstm, only rnn supported for the moment
 #' @param batch_size batch size: number of samples used at each weight iteration, only 1 supported for the moment
 #' @param sigmoid method to be passed to the sigmoid function
-#' @param start_from_end should the sequence start from the end, legacy of the binary example
+#' @param start_from_end should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining
 #' @param learningrate_decay coefficient to apply to the learning rate at each epoch, via the epoch_annealing function
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
 #' @param use_bias should the network use bias
@@ -71,10 +71,10 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   }
   
   # reverse the time dim if start from end
-  if(start_from_end){
-    X <- X[,dim(X)[2]:1,,drop = F]
-    Y <- Y[,dim(X)[2]:1,,drop = F]
-  }
+  # if(start_from_end){
+  #   X <- X[,dim(X)[2]:1,,drop = F]
+  #   Y <- Y[,dim(X)[2]:1,,drop = F]
+  # }
   
   # initialize the model list
   model                         = list(...) # we start by the ... argument before appending everybody else
@@ -115,6 +115,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     lj = list()
     for(i in seq(round(dim(Y)[1]/model$batch_size))){lj[[i]] = seq(dim(Y)[1])[index == i]}
     for (j in lj) {
+    # for (j in 1:dim(Y)[1]) {
       # generate input and output for the sample loop
       a = X[j,,,drop=F]
       c = Y[j,,,drop=F]
@@ -154,11 +155,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   } # end epoch loop
   
   # clean model object, get rid of the update mainly, potentially other cleaning if not necessary in predictr
-  model$time_synapse_update      = NULL
-  model$bias_synapse_update      = NULL
-  model$recurrent_synapse_update = NULL
-  if(model$use_bias != T){model$bias_synapse = NULL}
-  model$current_epoch = NULL
+  model = clean_r(model)
   
   attr(model, 'error') <- colMeans(model$error)
   

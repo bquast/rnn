@@ -7,6 +7,7 @@
 #' @param model output of the trainr function
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param hidden should the function output the hidden units states
+#' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output
 #' @param ... arguments to pass on to sigmoid function
 #' @return array or matrix of predicted values
 #' @examples 
@@ -63,9 +64,9 @@ predictr <- function(model, X, hidden = FALSE, real_output = T,...) {
   }
   
   # reverse the time dim if start from end
-  if(model$start_from_end){
-    X <- X[,dim(X)[2]:1,,drop = F]
-  }
+  # if(model$start_from_end){
+  #   X <- X[,dim(X)[2]:1,,drop = F]
+  # }
   
   store <- list()
   for(i in seq(length(model$synapse_dim) - 1)){
@@ -109,9 +110,9 @@ predictr <- function(model, X, hidden = FALSE, real_output = T,...) {
   }
   
   # reverse the time dim if start from end
-  if(model$start_from_end){
-    store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
-  }
+  # if(model$start_from_end && real_output){
+  #   store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
+  # }
   
   # convert output to matrix if 2 dimensional, real_output argument added if used inside trainr
   if(real_output){

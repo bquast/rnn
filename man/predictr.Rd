@@ -4,7 +4,7 @@
 \alias{predictr}
 \title{Recurrent Neural Network}
 \usage{
-predictr(model, X, hidden = FALSE, ...)
+predictr(model, X, hidden = FALSE, real_output = T, ...)
 }
 \arguments{
 \item{model}{output of the trainr function}
@@ -12,6 +12,8 @@ predictr(model, X, hidden = FALSE, ...)
 \item{X}{array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
 \item{hidden}{should the function output the hidden units states}
+
+\item{real_output}{option used when the function in called inside trainr, do not drop factor for 2 dimension array output}
 
 \item{...}{arguments to pass on to sigmoid function}
 }
