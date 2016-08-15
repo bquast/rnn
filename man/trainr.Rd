@@ -7,7 +7,7 @@
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), network_type = "rnn", numepochs = 1,
   sigmoid = c("logistic", "Gompertz", "tanh"), start_from_end = FALSE,
-  use_bias = F, epoch_function = c(epoch_print),
+  use_bias = F, batch_size = 1, epoch_function = c(epoch_print),
   epoch_model_function = c(epoch_annealing), loss_function = loss_L1, ...)
 }
 \arguments{
@@ -29,9 +29,11 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{sigmoid}{method to be passed to the sigmoid function}
 
-\item{start_from_end}{should the sequence start from the end, legacy of the binary example}
+\item{start_from_end}{should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining}
 
 \item{use_bias}{should the network use bias}
+
+\item{batch_size}{batch size: number of samples used at each weight iteration, only 1 supported for the moment}
 
 \item{epoch_function}{vector of functions with no side effect on the model to applied at each epoch loop}
 
@@ -39,7 +41,7 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{loss_function}{loss function, applied in each sample loop, vocabulary to verify}
 
-\item{...}{Arguments to be passed to methods, a way to store them in the model list is needed}
+\item{...}{Arguments to be passed to methods, to be used in user defined functions}
 }
 \value{
 a model to be used by the predictr function

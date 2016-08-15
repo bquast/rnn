@@ -7,6 +7,7 @@
 #' @param model output of the trainr function
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param hidden should the function output the hidden units states
+#' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output
 #' @param ... arguments to pass on to sigmoid function
 #' @return array or matrix of predicted values
 #' @examples 
@@ -55,7 +56,7 @@
 #' hist(  B-(A1+A2) )
 #' 
 
-predictr <- function(model, X, hidden = FALSE, ...) {
+predictr <- function(model, X, hidden = FALSE, real_output = T,...) {
   
   # coerce to array if matrix
   if(length(dim(X)) == 2){
@@ -63,9 +64,9 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   }
   
   # reverse the time dim if start from end
-  if(model$start_from_end){
-    X <- X[,dim(X)[2]:1,,drop = F]
-  }
+  # if(model$start_from_end){
+  #   X <- X[,dim(X)[2]:1,,drop = F]
+  # }
   
   store <- list()
   for(i in seq(length(model$synapse_dim) - 1)){
@@ -109,16 +110,19 @@ predictr <- function(model, X, hidden = FALSE, ...) {
   }
   
   # reverse the time dim if start from end
-  if(model$start_from_end){
-    store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
+  # if(model$start_from_end && real_output){
+  #   store = lapply(store,function(x){x[,dim(x)[2]:1,,drop=F]})
+  # }
+  
+  # convert output to matrix if 2 dimensional, real_output argument added if used inside trainr
+  if(real_output){
+    if(dim(store[[length(store)]])[3]==1) {
+      store[[length(store)]] <- matrix(store[[length(store)]],
+                                       nrow = dim(store[[length(store)]])[1],
+                                       ncol = dim(store[[length(store)]])[2])
+    }
   }
   
-  # convert output to matrix if 2 dimensional
-  if(dim(store[[length(store)]])[3]==1) {
-    store[[length(store)]] <- matrix(store[[length(store)]],
-                                     nrow = dim(store[[length(store)]])[1],
-                                     ncol = dim(store[[length(store)]])[2])  
-  }
   
   # return output vector
   if(hidden == FALSE){ # return only the last element of the list, i.e. the output
