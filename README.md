@@ -66,7 +66,7 @@ Development
 -------------
 Development takes place on the GitHub page.
 
-http://github.com/rnn/decompr
+http://github.com/rnn/
 
 Bugs can be filed on the issues page on GitHub.
 
