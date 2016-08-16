@@ -9,6 +9,8 @@ Depends:
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
+URL: http://qua.st/rnn, https://github.com/bquast/rnn
+BugReports: https://github.com/bquast/rnn/issues
 Imports:
     sigmoid,
     shiny
