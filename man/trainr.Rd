@@ -7,7 +7,8 @@
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), network_type = "rnn", numepochs = 1,
   sigmoid = c("logistic", "Gompertz", "tanh"), start_from_end = FALSE,
-  use_bias = F, batch_size = 1, epoch_function = c(epoch_print),
+  use_bias = F, batch_size = 1, many_to_one = F,
+  epoch_function = c(epoch_print),
   epoch_model_function = c(epoch_annealing), loss_function = loss_L1, ...)
 }
 \arguments{
@@ -34,6 +35,8 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 \item{use_bias}{should the network use bias}
 
 \item{batch_size}{batch size: number of samples used at each weight iteration, only 1 supported for the moment}
+
+\item{many_to_one}{if TRUE, the network will be trained to backpropagate only the last time step, the data format must be the same than the classic though but only the error from the last time step will be backpropagate through time. we'll find a cleaner way for the input data later.}
 
 \item{epoch_function}{vector of functions with no side effect on the model to applied at each epoch loop}
 

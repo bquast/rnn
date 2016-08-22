@@ -2,8 +2,8 @@
 set.seed(1)
 
 # create training numbers
-X1 = sample(0:127, 7000, replace=TRUE)
-X2 = sample(0:127, 7000, replace=TRUE)
+X1 = sample(0:127, 700, replace=TRUE)
+X2 = sample(0:127, 700, replace=TRUE)
 
 # create training response numbers
 Y <- X1 + X2
@@ -42,12 +42,13 @@ Y <- array( Y, dim=c(dim(Y),1) )
 model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F],
                 X=X[,dim(X)[2]:1,,drop=F],
                 learningrate   =  0.1,
-                hidden_dim     =  c(10,10),
+                hidden_dim     =  c(10),
+                batch_size     = 10,
                 numepochs      =  5,
-                batch_size     = 100,
                 momentum       =0,
                 use_bias       = F,
-                learningrate_decay = 1)
+                learningrate_decay = 0.99,
+                start_from_end = F)
 
 set.seed(1) # need a new seed as RNG as moved during trainr because of bias generation, in order to compare before after the bias implementation
 
@@ -62,7 +63,7 @@ A <- array( c(A1,A2), dim=c(dim(A1),2) )
 B  <- predictr(model, A[,dim(A)[2]:1,,drop=F])[,dim(A)[2]:1]
 
 # inspect the differences              
-expect_equal(sum(bin2int(B)), 888626)
+expect_equal(sum(bin2int(B)), 862398)
 # print(sum(bin2int(B)))
 # print(sum(bin2int(A1))+sum(bin2int(A2)))
 

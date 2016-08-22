@@ -16,6 +16,7 @@
 #' @param learningrate_decay coefficient to apply to the learning rate at each epoch, via the epoch_annealing function
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
 #' @param use_bias should the network use bias
+#' @param many_to_one if TRUE, the network will be trained to backpropagate only the last time step, the data format must be the same than the classic though but only the error from the last time step will be backpropagate through time. we'll find a cleaner way for the input data later.
 #' @param epoch_function vector of functions with no side effect on the model to applied at each epoch loop
 #' @param epoch_model_function vector of functions with side effect on the model to applied at each epoch loop
 #' @param loss_function loss function, applied in each sample loop, vocabulary to verify
@@ -47,6 +48,7 @@
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",
                    numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE, use_bias = F, batch_size = 1,
+                   many_to_one = F,
                    epoch_function = c(epoch_print),
                    epoch_model_function = c(epoch_annealing),
                    loss_function = loss_L1,...) {
@@ -91,6 +93,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$learningrate_decay      = learningrate_decay ## this one should be in the ... arg and be here initially but he was supply before
   model$momentum                = momentum
   model$use_bias                = use_bias
+  model$many_to_one             = many_to_one
   model$start_from_end          = start_from_end
   model$epoch_function          = epoch_function
   model$epoch_model_function    = epoch_model_function
@@ -104,12 +107,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     model$store[[i]] <- array(0,dim = c(dim(Y)[1:2],model$synapse_dim[i+1]))
   }
   
-  if(model$network_type == "rnn"){
-    model <- init_rnn(model)
-  }else{
-    stop("only rnn supported for the moment")
-  }
-  
+  model <- init_r(model)
   
   # Storing errors, dim 1: samples, dim 2 is epochs, we could store also the time and variable dimension
   model$error <- array(0,dim = c(dim(Y)[1],model$numepochs))
@@ -120,8 +118,9 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     index = sample(seq(round(dim(Y)[1]/model$batch_size)),dim(Y)[1],replace = T)
     lj = list()
     for(i in seq(round(dim(Y)[1]/model$batch_size))){lj[[i]] = seq(dim(Y)[1])[index == i]}
+    lj[unlist(lapply(lj,length)) <1] = NULL
+    
     for (j in lj) {
-    # for (j in 1:dim(Y)[1]) {
       # generate input and output for the sample loop
       a = X[j,,,drop=F]
       c = Y[j,,,drop=F]
@@ -143,11 +142,6 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       
     } # end sample loop
     
-    # update best guess if error is minimal, will make more sens to store the weight...
-    if(colMeans(model$error)[epoch] <= min(colMeans(model$error)[1:epoch])){
-      model$store_best <- model$store
-    }
-    
     # epoch_function
     for(i in model$epoch_function){
       i(model)
@@ -159,6 +153,11 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     }
     
   } # end epoch loop
+  
+  # update best guess if error is minimal, will make more sens to store the weight...
+  if(colMeans(model$error)[epoch] <= min(colMeans(model$error)[1:epoch])){
+    model$store_best <- model$store
+  }
   
   # clean model object, get rid of the update mainly, potentially other cleaning if not necessary in predictr
   model = clean_r(model)

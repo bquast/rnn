@@ -68,5 +68,6 @@ table( B-(A1+A2) )
 # plot the difference
 hist(  B-(A1+A2) )
 
+
 }
 
