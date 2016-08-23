@@ -81,30 +81,30 @@ author:
   avatar           : "bio-photo.jpg"
   bio              : "Author / Maintainer"
   location         : "Geneva"
-  email            : "bquast@gmail.com"
+  email            : bquast@gmail.com
   uri              : http://qua.st/
   bitbucket        :
   codepen          :
   dribbble         :
   flickr           :
-  facebook         : "baquast"
+  facebook         : baquast
   foursquare       :
-  github           : "bquast"
-  google_plus      : "BastiaanQuast"
+  github           : bquast
+  google_plus      : BastiaanQuast
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         : "baquast"
+  linkedin         : baquast
   pinterest        :
   soundcloud       :
   stackoverflow    : http://stackoverflow.com/users/1328355/bquast
   steam            :
   tumblr           :
-  twitter          : "baquast"
+  twitter          : baquast
   vine             :
   weibo            :
   xing             :
-  youtube          :
+  youtube          : BastiaanQuast
 
 
 # Reading Files
