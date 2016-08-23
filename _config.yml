@@ -7,13 +7,13 @@
 
 # Site Settings
 locale                   : "en"
-title                    : "Site Title"
+title                    : "rnn"
 title_separator          : "-"
-name                     : "Your Name"
-description              : "An amazing website."
-url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
-baseurl                  : # the subpath of your site, e.g. "/blog"
-repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+name                     : "Bastiaan Quast"
+description              : "Recurrent Neural Networks in R"
+url                      : https://qua.st # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+baseurl                  : /rnn # the subpath of your site, e.g. "/blog"
+repository               : bquast/rnn # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -77,11 +77,11 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Name"
+  name             : "Bastiaan Quast"
   avatar           : "bio-photo.jpg"
-  bio              : "I am an amazing person."
-  location         : "Somewhere"
-  email            :
+  bio              : "Author/Maintainer"
+  location         : "Geneva"
+  email            : "bquast@gmail.com"
   uri              :
   bitbucket        :
   codepen          :
