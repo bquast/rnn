@@ -79,28 +79,28 @@ analytics:
 author:
   name             : "Bastiaan Quast"
   avatar           : "bio-photo.jpg"
-  bio              : "Author/Maintainer"
+  bio              : "Author / Maintainer"
   location         : "Geneva"
   email            : "bquast@gmail.com"
-  uri              :
+  uri              : http://qua.st/
   bitbucket        :
   codepen          :
   dribbble         :
   flickr           :
-  facebook         :
+  facebook         : "baquast"
   foursquare       :
-  github           :
-  google_plus      :
+  github           : "bquast"
+  google_plus      : "BastiaanQuast"
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         :
+  linkedin         : "baquast"
   pinterest        :
   soundcloud       :
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          :
+  twitter          : "baquast"
   vine             :
   weibo            :
   xing             :
