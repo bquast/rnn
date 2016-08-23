@@ -1,6 +1,7 @@
 ---
 layout: single
 title: "rnn: a Recurrent Neural Network in R"
+author: "Bastiaan Quast"
 output: html_document
 permalink: cran-release
 tags: [cran]
