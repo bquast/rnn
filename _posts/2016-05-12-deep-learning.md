@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "rnn: a Recurrent Neural Network in R"
+title: "Implementing deep learning in rnn"
 author: Dimitri Fichou
 author_profile: true
 permalink: deep-learning
