@@ -3,7 +3,7 @@ layout: single
 title: "rnn: a Recurrent Neural Network in R"
 output: html_document
 permalink: cran-release
-tags: [internet demand, internet access]
+tags: [cran]
 ---
 
 The `rnn` package has been published on CRAN:
