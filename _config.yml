@@ -78,7 +78,7 @@ analytics:
 # Site Author
 author:
   name             : "Bastiaan Quast"
-  avatar           : "bio-photo.jpg"
+  avatar           : "http://gravatar.com/avatar/9f979d814c18db7e759b64ca8a52953d?s=400"
   bio              : "Author / Maintainer"
   location         : "Geneva"
   email            : bquast@gmail.com
