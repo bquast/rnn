@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 title: "rnn: a Recurrent Neural Network in R"
 output: html_document
 permalink: cran-release
