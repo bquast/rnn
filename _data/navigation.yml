@@ -1,7 +1,7 @@
 # main links links
 main:
   - title: "Quick-Start Quide"
-    url: /quick-start-guide/
+    url: /docs/quick-start-guide/
 
   - title: "FAQ"
     url: /faq/
