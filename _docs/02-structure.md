@@ -1,8 +1,8 @@
 ---
 title: "Structure"
 permalink: /docs/structure/
-excerpt: "How the theme is organized and what all of the files are for."
-modified: 2016-08-08T16:25:30-04:00
+excerpt: ""
+modified: 2016-08-24
 ---
 
 Nothing clever here :wink:. Layouts, data files, and includes are all placed in their default locations. Stylesheets and scripts in `assets`, and a few development related files in the project's root directory.
