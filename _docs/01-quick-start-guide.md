@@ -5,6 +5,8 @@ excerpt: "How to quickly install and setup Minimal Mistakes for use with GitHub 
 modified: 2016-04-13T15:54:02-04:00
 redirect_from:
   - /theme-setup/
+sidebar:
+  nav: "docs"  
 ---
 
 {% include base_path %}
