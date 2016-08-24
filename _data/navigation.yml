@@ -1,10 +1,10 @@
 # main links links
 main:
   - title: "Quick-Start Quide"
-    url: /quick-start
+    url: /quick-start-guide/
 
   - title: "FAQ"
-    url: /faq
+    url: /faq/
 
   - title: "About"
     url: /about
