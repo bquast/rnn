@@ -116,7 +116,7 @@ defaults:
       author_profile: true
       read_time: true
       comments: true
-      share: true
+      share: false
       related: true
   # _pages
   - scope:
@@ -126,13 +126,18 @@ defaults:
       layout: single
       author_profile: true
   # _docs
+  # _docs
   - scope:
       path: ""
       type: docs
     values:
       layout: single
+      read_time: false
       author_profile: false
-      share: true
+      share: false
+      comments: false
+      sidebar:
+        nav: "docs"
 
 # Reading Files
 include:
