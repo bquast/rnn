@@ -101,11 +101,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$last_layer_error        = Y*0
   model$last_layer_delta        = Y*0
   
-  # Storing layers states, filled with 0 for the moment
-  model$store <- list()
-  for(i in seq(length(model$synapse_dim) - 1)){
-    model$store[[i]] <- array(0,dim = c(dim(Y)[1:2],model$synapse_dim[i+1]))
-  }
+  
   
   model <- init_r(model)
   
@@ -127,9 +123,17 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       
       # feed forward
       store = predictr(model,a,hidden = T,real_output = F)
-      for(i in seq(length(model$synapse_dim) - 1)){
-        model$store[[i]][j,,] = store[[i]]
+      if(model$network_type == "rnn"){
+        for(i in seq(length(model$synapse_dim) - 1)){
+          model$store[[i]][j,,] = store[[i]]
+        }
+      }else if(model$network_type == "lstm" | model$network_type == "gru" ){
+        for(i in seq(length(model$hidden_dim))){
+          model$store[[i]][j,,,] = store[[i]]
+        }
+        model$store[[length(model$hidden_dim)+1]][j,,] = store[[length(model$hidden_dim)+1]] # output
       }
+      
       
       # apply back propagation
       model = backprop_r(model,a,c,j)
@@ -160,7 +164,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   }
   
   # clean model object, get rid of the update mainly, potentially other cleaning if not necessary in predictr
-  model = clean_r(model)
+  # model = clean_r(model)
   
   attr(model, 'error') <- colMeans(model$error)
   

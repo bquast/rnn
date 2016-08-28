@@ -67,6 +67,8 @@ predictr = function(model, X, hidden = FALSE, real_output = T,...){
     predict_rnn(model, X, hidden, real_output,...)
   } else if (model$network_type == "lstm"){
     predict_lstm(model, X, hidden, real_output,...)
+  } else if (model$network_type == "gru"){
+    predict_gru(model, X, hidden, real_output,...)
   }else{
     stop("network_type_unknown for the prediction")
   }
@@ -145,8 +147,8 @@ predict_rnn <- function(model, X, hidden = FALSE, real_output = T,...) {
 #' @export
 #' @importFrom stats runif
 #' @importFrom sigmoid sigmoid
-#' @title LSTM prediction function
-#' @description predict the output of a LSTM model
+#' @title gru prediction function
+#' @description predict the output of a lstm model
 #' @param model output of the trainr function
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param hidden should the function output the hidden units states
@@ -155,56 +157,99 @@ predict_rnn <- function(model, X, hidden = FALSE, real_output = T,...) {
 #' @return array or matrix of predicted values
 
 predict_lstm <- function(model, X, hidden = FALSE, real_output = T,...) {
-  # store <- list(X)
-  # layer_1_values = list()
-  # c_t = list()
-  # for(i in seq(length(model$hidden_dim))){
-  #   store[[i+1]] <- array(0,dim = c(dim(X)[1:2],model$hidden_dim[i]))
-  #   layer_1_values[[i]]  = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i])
-  #   c_t[[i]]         = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i])
-  # }
-  # store[[length(store)+1]] <- array(0,dim = c(dim(X)[1:2],model$output_dim))
-  # 
-  # for (position in 1:model$time_dim) {
-  #   
-  #   for(i in seq(length(model$hidden_dim))){
-  #     
-  #     # generate input 
-  #     x = array(store[[i]][,position,],dim=dim(store[[i]])[c(1,3)])
-  #     
-  #     # hidden layer (input ~+ prev_hidden)
-  #     i_t     = sigmoid((x %*% model$time_synapse[[i]][,,1]) + (layer_1_values[[i]] %*% model$recurrent_synapse[[i]][,,1])) ## input gate
-  #     f_t     = sigmoid((x %*% model$time_synapse[[i]][,,2]) + (layer_1_values[[i]] %*% model$recurrent_synapse[[i]][,,2])) ## forget gate
-  #     o_t     = sigmoid((x %*% model$time_synapse[[i]][,,3]) + (layer_1_values[[i]] %*% model$recurrent_synapse[[i]][,,3])) ## output gate
-  #     c_in_t  = tanh(   (x %*% model$time_synapse[[i]][,,4]) + (layer_1_values[[i]] %*% model$recurrent_synapse[[i]][,,4])) ## cell gate
-  #     if(model$use_bias){
-  #       i_t     = i_t + model$bias_synapse[[i]][,1] ## input gate
-  #       f_t     = f_t + model$bias_synapse[[i]][,2] ## forget gate
-  #       o_t     = o_t + model$bias_synapse[[i]][,3] ## output gate
-  #       c_in_t  = c_in_t + model$bias_synapse[[i]][,4] ## cell gate
-  #     }
-  #     c_t[[i]]     = (f_t * c_t[[i]]) + (i_t * c_in_t)
-  #     store[[i+1]][,position,] = o_t * tanh(c_t[[i]])
-  #     
-  #     layer_1_values[[i]] = store[[i+1]][,position,]
-  #   } # end synapse loop
-  #   # output layer
-  #   store[[length(store)]][,position,] = store[[length(store) - 1]][,position,] %*% model$time_synapse_ouput
-  #   if(model$use_bias){
-  #     store[[length(store)]][,position,] = store[[length(store)]][,position,]  + model$bias_synapse_ouput
-  #   }
-  #   store[[length(store)]][,position,] = sigmoid(store[[length(store)]][,position,])
-  # } # end time loop
-  # 
-  # store[[1]] <- NULL ## removed the X input
   
   store <- list()
-  layer_1_values = list()
+  prev_layer_values = list()
   c_t = list()
   for(i in seq(length(model$hidden_dim))){
-    store[[i]] <- array(0,dim = c(dim(X)[1:2],model$hidden_dim[i]))
-    layer_1_values[[i]]  = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i]) # we need this object because of t-1 which do not exist in store
+    store[[i]] = array(0,dim = c(dim(X)[1:2],model$hidden_dim[i],6)) # 4d arrays !!!, hidden, cell, f, i, g, o
+    prev_layer_values[[i]]  = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i]) # we need this object because of t-1 which do not exist in store
     c_t[[i]]         = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i]) # we need this object because of t-1 which do not exist in store
+  }
+  store[[length(store)+1]] <- array(0,dim = c(dim(X)[1:2],model$output_dim))
+  
+  for (position in 1:model$time_dim) {
+    
+    # generate input
+    x = array(X[,position,],dim=dim(X)[c(1,3)])
+    
+    for(i in seq(length(model$hidden_dim))){
+      # hidden layer (input ~+ prev_hidden)
+      f_t     = (x %*% array(model$time_synapse[[i]][,,1],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (prev_layer_values[[i]] %*% array(model$recurrent_synapse[[i]][,,1],dim=c(dim(model$recurrent_synapse[[i]])[1:2]))) 
+      i_t     = (x %*% array(model$time_synapse[[i]][,,2],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (prev_layer_values[[i]] %*% array(model$recurrent_synapse[[i]][,,2],dim=c(dim(model$recurrent_synapse[[i]])[1:2]))) 
+      c_in_t  = (x %*% array(model$time_synapse[[i]][,,3],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (prev_layer_values[[i]] %*% array(model$recurrent_synapse[[i]][,,3],dim=c(dim(model$recurrent_synapse[[i]])[1:2]))) 
+      o_t     = (x %*% array(model$time_synapse[[i]][,,4],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (prev_layer_values[[i]] %*% array(model$recurrent_synapse[[i]][,,4],dim=c(dim(model$recurrent_synapse[[i]])[1:2])))
+      if(model$use_bias){
+        f_t = f_t + model$bias_synapse[[i]][,1]
+        i_t = i_t + model$bias_synapse[[i]][,2]
+        c_in_t = c_in_t + model$bias_synapse[[i]][,3]
+        o_t = o_t + model$bias_synapse[[i]][,4]
+      }
+      f_t = sigmoid(f_t)
+      i_t = sigmoid(i_t)
+      c_in_t = tanh(c_in_t)
+      o_t = sigmoid(o_t)
+      
+      c_t[[i]]     = f_t * c_t[[i]] + (i_t * c_in_t)
+      store[[i]][,position,,1] = o_t * tanh(c_t[[i]])
+      store[[i]][,position,,2] = c_t[[i]]
+      store[[i]][,position,,3] = f_t
+      store[[i]][,position,,4] = i_t
+      store[[i]][,position,,5] = c_in_t
+      store[[i]][,position,,6] = o_t
+      
+      # replace the x in case of multi layer
+      prev_layer_values[[i]] = x = o_t * tanh(c_t[[i]])# the top of this layer at this position is the past of the top layer at the next position
+    }
+    
+    
+    # output layer (new binary representation)
+    store[[length(store)]][,position,] = store[[length(store) - 1]][,position,,1] %*% model$time_synapse[[length(model$time_synapse)]]
+    if(model$use_bias){
+      store[[length(store)]][,position,] = store[[length(store)]][,position,] + model$bias_synapse[[length(model$bias_synapse)]]
+    }
+    store[[length(store)]][,position,] = sigmoid(store[[length(store)]][,position,])
+  } # end time loop
+  
+  # convert output to matrix if 2 dimensional, real_output argument added if used inside trainr
+  if(real_output){
+    if(dim(store[[length(store)]])[3]==1) {
+      store[[length(store)]] <- matrix(store[[length(store)]],
+                                       nrow = dim(store[[length(store)]])[1],
+                                       ncol = dim(store[[length(store)]])[2])
+    }
+  }
+  
+  # return output
+  if(hidden == FALSE){ # return only the last element of the list, i.e. the output
+    return(store[[length(store)]])
+  }else{ # return everything
+    return(store)
+  }
+}
+
+
+
+#' @name predict_gru
+#' @export
+#' @importFrom stats runif
+#' @importFrom sigmoid sigmoid
+#' @title gru prediction function
+#' @description predict the output of a gru model
+#' @param model output of the trainr function
+#' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
+#' @param hidden should the function output the hidden units states
+#' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output
+#' @param ... arguments to pass on to sigmoid function
+#' @return array or matrix of predicted values
+
+predict_gru <- function(model, X, hidden = FALSE, real_output = T,...) {
+
+  store <- list()
+  h_t = list()
+  for(i in seq(length(model$hidden_dim))){
+    store[[i]] = array(0,dim = c(dim(X)[1:2],model$hidden_dim[i],4)) # 4d arrays !!!, hidden, z, r, h
+    h_t[[i]]         = matrix(0,nrow=dim(X)[1], ncol = model$hidden_dim[i]) # we need this object because of t-1 which do not exist in store
   }
   store[[length(store)+1]] <- array(0,dim = c(dim(X)[1:2],model$output_dim))
 
@@ -212,20 +257,41 @@ predict_lstm <- function(model, X, hidden = FALSE, real_output = T,...) {
 
       # generate input
       x = array(X[,position,],dim=dim(X)[c(1,3)])
+      
+      for(i in seq(length(model$hidden_dim))){
+        # hidden layer (input ~+ prev_hidden)
+        z_t     = (x %*% array(model$time_synapse[[i]][,,1],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (h_t[[i]]  %*% array(model$recurrent_synapse[[i]][,,1],dim=c(dim(model$recurrent_synapse[[i]])[1:2]))) 
+        r_t     = (x %*% array(model$time_synapse[[i]][,,2],dim=c(dim(model$time_synapse[[i]])[1:2]))) + (h_t[[i]]  %*% array(model$recurrent_synapse[[i]][,,2],dim=c(dim(model$recurrent_synapse[[i]])[1:2])))
+        if(model$use_bias){
+          z_t = z_t + model$bias_synapse[[i]][,1]
+          r_t = r_t + model$bias_synapse[[i]][,2]
+        }
+        z_t = sigmoid(z_t)
+        r_t = sigmoid(r_t)
 
-      # hidden layer (input ~+ prev_hidden)
-      i_t     = sigmoid((x %*% model$synapse_0_i) + (layer_1_values[[1]] %*% model$synapse_h_i) + model$synapse_b_i) # add bias?
-      f_t     = sigmoid((x %*% model$synapse_0_f) + (layer_1_values[[1]] %*% model$synapse_h_f) + model$synapse_b_f) # add bias?
-      o_t     = sigmoid((x %*% model$synapse_0_o) + (layer_1_values[[1]] %*% model$synapse_h_o) + model$synapse_b_o) # add bias?
-      c_in_t  = tanh(   (x %*% model$synapse_0_c) + (layer_1_values[[1]] %*% model$synapse_h_c) + model$synapse_b_c)
-      c_t[[1]]     = (f_t * c_t[[1]]) + (i_t * c_in_t)
-      store[[1]][,position,] = o_t * tanh(c_t[[1]])
+        h_in_t  = (x %*% array(model$time_synapse[[i]][,,3],dim=c(dim(model$time_synapse[[i]])[1:2]))) + ((h_t[[i]]  * r_t) %*% array(model$recurrent_synapse[[i]][,,3],dim=c(dim(model$recurrent_synapse[[i]])[1:2])))
+        if(model$use_bias){
+          h_in_t = h_in_t + model$bias_synapse[[i]][,3]
+        }
+        h_in_t = tanh(h_in_t)
+
+        h_t[[i]]     = (1 - z_t) * h_t[[i]] + (z_t * h_in_t)
+        store[[i]][,position,,1] = h_t[[i]]
+        store[[i]][,position,,2] = z_t
+        store[[i]][,position,,3] = r_t
+        store[[i]][,position,,4] = h_in_t
+        
+        # replace the x in case of multi layer
+        x = h_t[[i]]  # the top of this layer at this position is the past of the top layer at the next position
+      }
+      
       
       # output layer (new binary representation)
-      store[[2]][,position,] = sigmoid(store[[1]][,position,] %*% model$synapse_1 + model$synapse_b_1)
-      
-      # store hidden layer so we can print it out
-      layer_1_values[[1]] = store[[1]][,position,]
+      store[[length(store)]][,position,] = store[[length(store) - 1]][,position,,1] %*% model$time_synapse[[length(model$time_synapse)]]
+      if(model$use_bias){
+        store[[length(store)]][,position,] = store[[length(store)]][,position,] + model$bias_synapse[[length(model$bias_synapse)]]
+      }
+      store[[length(store)]][,position,] = sigmoid(store[[length(store)]][,position,])
   } # end time loop
 
   # convert output to matrix if 2 dimensional, real_output argument added if used inside trainr

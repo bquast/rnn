@@ -22,7 +22,7 @@ b2i <- function(binary)
 # replicable
 set.seed(1)
 
-time_dim = 14
+time_dim = 8
 
 # create training numbers
 X1 = sample(0:(2^(time_dim-1)-1), 7000, replace=TRUE)
@@ -71,7 +71,16 @@ Y_test = Y_test[,dim(Y_test)[2]:1,,drop=F]
 print_test = function(model){
   message(paste0("Trained epoch: ",model$current_epoch," - Learning rate: ",model$learningrate))
   message(paste0("Epoch error: ",colMeans(model$error)[model$current_epoch]))
-  message(paste0("Test set: target/predict - ",model$target_test,"/",sum(bin2int(predictr(model,model$X_test)))))
+  pred = predictr(model,model$X_test)
+  message(paste0("Test set: target/predict - ",model$target_test,"/",sum(bin2int(pred))))
+  print(paste("perfect:",sum(apply(Y_test[,,1] - round(pred[,]),1,sum) == 0),"/",nrow(Y_test)))
+  n = sample(seq(nrow(pred)),1)
+  print(paste("Pred:", paste(round(pred[n,]), collapse = " ")))
+  print(paste("True:", paste(model$Y_test[n,,], collapse = " ")))
+  print("- - - - - - - - - - -")
+  n = sample(seq(nrow(pred)),1)
+  print(paste("Pred:", paste(round(pred[n,]), collapse = " ")))
+  print(paste("True:", paste(model$Y_test[n,,], collapse = " ")))
 }
 
 # train the model
@@ -79,15 +88,17 @@ model <- trainr(Y=Y,
                 X=X,
                 X_test = X_test,
                 target_test = sum(bin2int(Y_test)),
-                learningrate   =  0.05,
-                hidden_dim     =  c(2),
-                batch_size     = 10,
-                numepochs      =  500,
+                Y_test = Y_test,
+                learningrate   =  0.01,
+                hidden_dim     =  c(16,16),
+                batch_size     = 50,
+                numepochs      =  5000,
                 momentum       =0.5,
-                use_bias       = T,
-                network_type = "lstm",
-                clipping = 10000,
-                learningrate_decay = 0.99,
+                use_bias       = F,
+                network_type = "gru",
+                # sigmoid = "Gompertz",
+                clipping = 1000000,
+                learningrate_decay = 0.95,
                 epoch_function = c(print_test)
                 )
 

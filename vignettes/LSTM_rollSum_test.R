@@ -3,7 +3,7 @@
 set.seed(1)
 
 X_dim_1 = 7000 # number of sampels
-X_dim_2 = 100 # time dimension
+X_dim_2 = 50 # time dimension
 X_dim_3 = 1 # number of variables, we will see later to make it more complex
 
 
@@ -33,16 +33,26 @@ Y1 <- array(Y1,dim=c(dim(Y1),1))
 
 set.seed(1)
 
+print_test = function(model){
+  message(paste0("Trained epoch: ",model$current_epoch," - Learning rate: ",model$learningrate))
+  message(paste0("Epoch error: ",colMeans(model$error)[model$current_epoch]))
+  pred = model$store[[2]]
+  n = sample(seq(nrow(pred)),1)
+  print(paste("Pred:", paste(round(pred[n,,]), collapse = " ")))
+  print(paste("True:", paste(Y1[n,,], collapse = " ")))
+}
+
 # train the model
 model <- trainr(Y=Y1,
                 X=X1,
-                learningrate   =  0.05,
-                hidden_dim     =  c(4),
-                batch_size     = 100,
+                learningrate   =  0.005,
+                hidden_dim     =  c(10),
+                batch_size     = 10,
                 numepochs      =  500,
                 momentum       =0.5,
                 use_bias       = T,
-                network_type = "lstm",
+                network_type = "rnn",
                 clipping = 100000,
-                learningrate_decay =1
+                learningrate_decay =1,
+                epoch_function =  c(print_test)
                 )
