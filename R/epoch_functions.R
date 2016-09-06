@@ -8,6 +8,7 @@
 epoch_print = function(model){
   message(paste0("Trained epoch: ",model$current_epoch," - Learning rate: ",model$learningrate))
   message(paste0("Epoch error: ",colMeans(model$error)[model$current_epoch]))
+  return(model)
 }
 
 #' @name epoch_annealing

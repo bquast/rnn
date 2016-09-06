@@ -104,6 +104,8 @@ cosinusServer <- function(input, output,session) {
   
   model <- eventReactive(input$go,{
     print_test = function(model){
+      message(paste0("Trained epoch: ",model$current_epoch," - Learning rate: ",model$learningrate))
+      message(paste0("Epoch error: ",colMeans(model$error)[model$current_epoch]))
       pred = predictr(model,model$X_test,real_output = T,hidden = T)
       if(is.null(model$test_error)){model$test_error = array(0,dim = c(dim(model$Y_test)[1],model$numepochs))}
       model$test_error[,model$current_epoch] <- apply(model$Y_test - pred[[length(pred)]],1,function(x){sum(abs(x))})
@@ -127,7 +129,7 @@ cosinusServer <- function(input, output,session) {
                       use_bias = input$use_bias,
                       learningrate_decay = input$learningrate_decay,
                       hidden_dim = hidden_dim,
-                      epoch_model_function = c(epoch_annealing,print_test)
+                      epoch_function = c(epoch_annealing,print_test)
       )
       return(model)
     })

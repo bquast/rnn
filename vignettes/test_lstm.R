@@ -90,23 +90,14 @@ model <- trainr(Y=Y,
                 target_test = sum(bin2int(Y_test)),
                 Y_test = Y_test,
                 learningrate   =  0.01,
-                hidden_dim     =  c(16,16),
-                batch_size     = 50,
-                numepochs      =  5000,
-                momentum       =0.5,
-                use_bias       = F,
-                network_type = "gru",
+                hidden_dim     =  c(16),
+                batch_size     = 100,
+                numepochs      =  50,
+                momentum       =0,
+                use_bias       = T,
+                network_type = "lstm",
                 # sigmoid = "Gompertz",
                 clipping = 1000000,
                 learningrate_decay = 0.95,
                 epoch_function = c(print_test)
                 )
-
-
-
-# inspect the differences              
-expect_equal(sum(bin2int(B)), 905522)
-# print(sum(bin2int(B)))
-# print(sum(bin2int(A1))+sum(bin2int(A2)))
-
-

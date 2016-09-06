@@ -9,17 +9,17 @@
 #' @param learningrate learning rate to be applied for weight iteration
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension(s) of hidden layer(s)
-#' @param network_type type of network, could be rnn or lstm, only rnn supported for the moment
+#' @param network_type type of network, could be rnn, gru or lstm. gru and lstm are experimentale.
 #' @param batch_size batch size: number of samples used at each weight iteration, only 1 supported for the moment
 #' @param sigmoid method to be passed to the sigmoid function
 #' @param start_from_end should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining
 #' @param learningrate_decay coefficient to apply to the learning rate at each epoch, via the epoch_annealing function
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
+#' @param update_rule rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "rmsprop" (experimentale)
 #' @param use_bias should the network use bias
-#' @param many_to_one if TRUE, the network will be trained to backpropagate only the last time step, the data format must be the same than the classic though but only the error from the last time step will be backpropagate through time. we'll find a cleaner way for the input data later.
-#' @param epoch_function vector of functions with no side effect on the model to applied at each epoch loop
-#' @param epoch_model_function vector of functions with side effect on the model to applied at each epoch loop
-#' @param loss_function loss function, applied in each sample loop, vocabulary to verify
+#' @param seq_to_seq_unsync if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning and error are set to 0 during back propagation.
+#' @param epoch_function vector of functions to applied at each epoch loop. Use it to intereact with the objects inside the list model or to print and plot at each epoch. Should return the model.
+#' @param loss_function loss function, applied in each sample loop, vocabulary to verify.
 #' @param ... Arguments to be passed to methods, to be used in user defined functions
 #' @return a model to be used by the predictr function
 #' @examples 
@@ -48,21 +48,12 @@
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",
                    numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE, use_bias = F, batch_size = 1,
-                   many_to_one = F,
-                   epoch_function = c(epoch_print),
-                   epoch_model_function = c(epoch_annealing),
+                   seq_to_seq_unsync=F,update_rule = "sgd",
+                   epoch_function = c(epoch_print,epoch_annealing),
                    loss_function = loss_L1,...) {
   
   #  find sigmoid
   sigmoid <- match.arg(sigmoid)
-  
-  # check the consistency
-  if(dim(X)[2] != dim(Y)[2]){
-    stop("The time dimension of X is different from the time dimension of Y. Only sequences to sequences is supported")
-  }
-  if(dim(X)[1] != dim(Y)[1]){
-    stop("The sample dimension of X is different from the sample dimension of Y.")
-  }
   
   # coerce to array if matrix
   if(length(dim(X)) == 2){
@@ -71,6 +62,25 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   if(length(dim(Y)) == 2){
     Y <- array(Y,dim=c(dim(Y),1))
   }
+  
+  if(seq_to_seq_unsync){
+    time_dim_input = dim(X)[2]
+    store = array(0, dim = c(dim(X)[1],dim(X)[2]+dim(Y)[2]-1,dim(X)[3]))
+    store[,1:dim(X)[2],] = X
+    X = store
+    store = array(0, dim = c(dim(X)[1],time_dim_input+dim(Y)[2]-1,dim(Y)[3]))
+    store[,time_dim_input:dim(store)[2],] = Y
+    Y = store
+  }
+  
+  # check the consistency
+  if(dim(X)[2] != dim(Y)[2] && !seq_to_seq_unsync){
+    stop("The time dimension of X is different from the time dimension of Y. seq_to_seq_unsync is set to FALSE")
+  }
+  if(dim(X)[1] != dim(Y)[1]){
+    stop("The sample dimension of X is different from the sample dimension of Y.")
+  }
+  
   
   # reverse the time dim if start from end
   # if(start_from_end){
@@ -92,16 +102,22 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$learningrate            = learningrate
   model$learningrate_decay      = learningrate_decay ## this one should be in the ... arg and be here initially but he was supply before
   model$momentum                = momentum
+  model$update_rule             = update_rule
   model$use_bias                = use_bias
-  model$many_to_one             = many_to_one
+  model$seq_to_seq_unsync       = seq_to_seq_unsync
   model$start_from_end          = start_from_end
   model$epoch_function          = epoch_function
-  model$epoch_model_function    = epoch_model_function
   model$loss_function           = loss_function
   model$last_layer_error        = Y*0
   model$last_layer_delta        = Y*0
   
+  if("epoch_model_function" %in% names(model)){
+    stop("epoch_model_function is not used anymore, use opech_function and return the model inside.")
+  }
   
+  if(seq_to_seq_unsync){ ## this will work for the training, we need something to make in work for the predictr
+    model$time_dim_input = time_dim_input
+  }
   
   model <- init_r(model)
   
@@ -148,12 +164,8 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
     
     # epoch_function
     for(i in model$epoch_function){
-      i(model)
-    }
-    
-    # # epoch_model_function
-    for(i in model$epoch_model_function){
       model <- i(model)
+      if(!is.list(model)){stop("one epoch function didn't return the model.")}
     }
     
   } # end epoch loop

@@ -43,6 +43,11 @@ backprop_rnn = function(model,a,c,j,...){
     model$last_layer_error[j,1:(model$time_dim - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
   }
+  if(model$seq_to_seq_unsync){
+    model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
+    model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0
+  }
+  
   
   model$error[j,model$current_epoch] <- apply(model$last_layer_error[j,,,drop=F],1,function(x){sum(abs(x))})
   
@@ -106,7 +111,10 @@ backprop_lstm = function(model,a,c,j,...){
     model$last_layer_error[j,1:(model$time_dim - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
   }
-  
+  if(model$seq_to_seq_unsync){
+    model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
+    model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0
+  }
   model$error[j,model$current_epoch] <- apply(model$last_layer_error[j,,,drop=F],1,function(x){sum(abs(x))})
   
   future_layer_cell_delta = list()
@@ -275,7 +283,10 @@ backprop_gru = function(model,a,c,j,...){
     model$last_layer_error[j,1:(model$time_dim - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
   }
-  
+  if(model$seq_to_seq_unsync){
+    model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
+    model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0
+  }
   model$error[j,model$current_epoch] <- apply(model$last_layer_error[j,,,drop=F],1,function(x){sum(abs(x))})
   
   future_layer_hidden_delta = list()

@@ -49,12 +49,11 @@ financeServer <- function(input, output,session) {
   })
   X.test <- reactive({
     # print(length(1:(max(dim(X))-input$prediction_gap)))
-    x <- X[,1:(max(dim(X))-input$prediction_gap),]
-    array(x,dim=c(1,(max(dim(X))-input$prediction_gap),4))
+    X[,1:(dim(X)[2]-input$prediction_gap),,drop=F]
   })
   y.test <- reactive({
     # print(length((1+input$prediction_gap):max(dim(X))))
-    y <- X[,(1+input$prediction_gap):max(dim(X)),as.numeric(input$target)]
+    y <- X[,(1+input$prediction_gap):dim(X)[2],as.numeric(input$target)]
     matrix(y, ncol=(max(dim(X))-input$prediction_gap))
   })
   y.pred <- reactive({

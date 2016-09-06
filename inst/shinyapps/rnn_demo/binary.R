@@ -154,7 +154,7 @@ binaryServer <- function(input, output,session) {
                       use_bias = input$use_bias,
                       learningrate_decay = input$learningrate_decay,
                       hidden_dim = hidden_dim,
-                      epoch_model_function = c(epoch_annealing,print_test)
+                      epoch_function = c(epoch_annealing,epoch_print,print_test)
       )
       return(model)
     })
