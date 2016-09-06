@@ -8,7 +8,7 @@
 clean_r = function(model){
   if(model$network_type == "rnn"){
     clean_rnn(model)
-  } else if (model$network_type == "lstm"){
+  } else if (model$network_type == "lstm" | model$network_type == "gru" ){
     clean_lstm(model)
   }else{
     stop("network_type_unknown for the cleaning")
@@ -43,3 +43,5 @@ clean_lstm = function(model){
   
   return(model)
 }
+
+
