@@ -30,15 +30,13 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{sigmoid}{method to be passed to the sigmoid function}
 
-\item{start_from_end}{should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining}
-
 \item{use_bias}{should the network use bias}
 
 \item{batch_size}{batch size: number of samples used at each weight iteration, only 1 supported for the moment}
 
-\item{seq_to_seq_unsync}{if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning and error are set to 0 during back propagation.}
+\item{seq_to_seq_unsync}{if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning, error are set to 0 during back propagation, input for the second part is also set to 0.}
 
-\item{update_rule}{rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "rmsprop" (experimentale)}
+\item{update_rule}{rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "adagrad" (experimentale)}
 
 \item{epoch_function}{vector of functions to applied at each epoch loop. Use it to intereact with the objects inside the list model or to print and plot at each epoch. Should return the model.}
 

@@ -7,7 +7,7 @@
 #' @param model output of the trainr function
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param hidden should the function output the hidden units states
-#' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output
+#' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output and other actions. Let it to TRUE, the default, to let the function take care of the data.
 #' @param ... arguments to pass on to sigmoid function
 #' @return array or matrix of predicted values
 #' @examples 
@@ -63,7 +63,7 @@ predictr = function(model, X, hidden = FALSE, real_output = T,...){
     X <- array(X,dim=c(dim(X),1))
   }
   
-  if(model$seq_to_seq_unsync == T){
+  if(real_output && model$seq_to_seq_unsync){ ## here we modify the X in case of seq_2_seq & real_output to have the good dimensions
     time_dim_input = dim(X)[2]
     store = array(0, dim = c(dim(X)[1],model$time_dim,dim(X)[3]))
     store[,1:dim(X)[2],] = X
@@ -93,7 +93,6 @@ predictr = function(model, X, hidden = FALSE, real_output = T,...){
 }
 
 #' @name predict_rnn
-#' @export
 #' @importFrom stats runif
 #' @importFrom sigmoid sigmoid
 #' @title Recurrent Neural Network
@@ -162,7 +161,6 @@ predict_rnn <- function(model, X, hidden = FALSE, real_output = T,...) {
 }
 
 #' @name predict_lstm
-#' @export
 #' @importFrom stats runif
 #' @importFrom sigmoid sigmoid
 #' @title gru prediction function
@@ -249,7 +247,6 @@ predict_lstm <- function(model, X, hidden = FALSE, real_output = T,...) {
 
 
 #' @name predict_gru
-#' @export
 #' @importFrom stats runif
 #' @importFrom sigmoid sigmoid
 #' @title gru prediction function

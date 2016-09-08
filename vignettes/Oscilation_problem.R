@@ -67,12 +67,13 @@ print_test = function(model){
 # train the model
 model <- trainr(Y=Y,
                 X=X,
-                learningrate   =  0.05, # best 0.05
+                learningrate   =  0.005, # best 0.05
                 hidden_dim     =  c(4,4,4),# best c(4,4,4)
                 batch_size     = 20, # best 20, not ok 50
                 numepochs      =  5, # best 50
                 momentum       =0, # best 0, not ok 0.5
                 use_bias       = T, # best T
+                update_rule = "adagrad",
                 network_type = "rnn", # best rnn
                 # clipping = 100000, # best 100000
                 learningrate_decay = 0.9, # best 0.9

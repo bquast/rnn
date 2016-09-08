@@ -1,5 +1,4 @@
 #' @name backprop_r
-#' @export
 #' @title backprop_r
 #' @description backpropagate the error in a model object
 #' @param model the output model object
@@ -22,7 +21,6 @@ backprop_r = function(model,a,c,j,...){
 }
 
 #' @name backprop_rnn
-#' @export
 #' @title backprop_rnn
 #' @description backpropagate the error in a model object of type rnn
 #' @param model the output model object
@@ -38,11 +36,6 @@ backprop_rnn = function(model,a,c,j,...){
   model$last_layer_error[j,,] = c - model$store[[length(model$store)]][j,,,drop=F]
   model$last_layer_delta[j,,] = model$last_layer_error[j,,,drop = F] * sigmoid_output_to_derivative(model$store[[length(model$store)]][j,,,drop=F])
   
-  # many_to_one
-  if(model$many_to_one){
-    model$last_layer_error[j,1:(model$time_dim - 1),] = 0
-    model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
-  }
   if(model$seq_to_seq_unsync){
     model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0
@@ -90,7 +83,6 @@ backprop_rnn = function(model,a,c,j,...){
 }
 
 #' @name backprop_lstm
-#' @export
 #' @title backprop_lstm
 #' @description backpropagate the error in a model object of type rlstm
 #' @param model the output model object
@@ -106,11 +98,6 @@ backprop_lstm = function(model,a,c,j,...){
   model$last_layer_error[j,,] = c - model$store[[length(model$store)]][j,,,drop=F]
   model$last_layer_delta[j,,] = model$last_layer_error[j,,,drop = F] * sigmoid_output_to_derivative(model$store[[length(model$store)]][j,,,drop=F])
   
-  # many_to_one
-  if(model$many_to_one){
-    model$last_layer_error[j,1:(model$time_dim - 1),] = 0
-    model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
-  }
   if(model$seq_to_seq_unsync){
     model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0
@@ -262,7 +249,6 @@ backprop_lstm = function(model,a,c,j,...){
 }
 
 #' @name backprop_gru
-#' @export
 #' @title backprop_gru
 #' @description backpropagate the error in a model object of type gru
 #' @param model the output model object
@@ -279,10 +265,6 @@ backprop_gru = function(model,a,c,j,...){
   model$last_layer_delta[j,,] = model$last_layer_error[j,,,drop = F] * sigmoid_output_to_derivative(model$store[[length(model$store)]][j,,,drop=F])
   
   # many_to_one
-  if(model$many_to_one){
-    model$last_layer_error[j,1:(model$time_dim - 1),] = 0
-    model$last_layer_delta[j,1:(model$time_dim - 1),] = 0
-  }
   if(model$seq_to_seq_unsync){
     model$last_layer_error[j,1:(model$time_dim_input - 1),] = 0
     model$last_layer_delta[j,1:(model$time_dim_input - 1),] = 0

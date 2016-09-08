@@ -1,5 +1,4 @@
 #' @name clean_r
-#' @export
 #' @title init_r
 #' @description Initialize the weight parameters
 #' @param model the output model object
@@ -16,7 +15,6 @@ clean_r = function(model){
 }
 
 #' @name clean_rnn
-#' @export
 #' @title clean_rnn
 #' @description clean the model for lighter output
 #' @param model the output model object
@@ -33,7 +31,6 @@ clean_rnn = function(model){
 }
 
 #' @name clean_lstm
-#' @export
 #' @title clean_lstm
 #' @description clean the model for lighter output
 #' @param model the output model object

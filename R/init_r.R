@@ -1,5 +1,4 @@
 #' @name init_r
-#' @export
 #' @title init_r
 #' @description Initialize the weight parameters
 #' @param model the output model object
@@ -16,7 +15,6 @@ init_r = function(model){
 }
 
 #' @name init_rnn
-#' @export
 #' @title init_rnn
 #' @description Initialize the weight parameter for a rnn
 #' @param model the output model object
@@ -54,7 +52,6 @@ init_rnn = function(model){
 }
 
 #' @name init_lstm
-#' @export
 #' @title init_lstm
 #' @description Initialize the weight parameter for a lstm
 #' @param model the output model object
@@ -89,7 +86,6 @@ init_lstm = function(model){
 }
 
 #' @name init_gru
-#' @export
 #' @title init_gru
 #' @description Initialize the weight parameter for a gru
 #' @param model the output model object

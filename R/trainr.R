@@ -12,12 +12,11 @@
 #' @param network_type type of network, could be rnn, gru or lstm. gru and lstm are experimentale.
 #' @param batch_size batch size: number of samples used at each weight iteration, only 1 supported for the moment
 #' @param sigmoid method to be passed to the sigmoid function
-#' @param start_from_end should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining
 #' @param learningrate_decay coefficient to apply to the learning rate at each epoch, via the epoch_annealing function
 #' @param momentum coefficient of the last weight iteration to keep for faster learning
-#' @param update_rule rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "rmsprop" (experimentale)
+#' @param update_rule rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "adagrad" (experimentale, do not learn yet)
 #' @param use_bias should the network use bias
-#' @param seq_to_seq_unsync if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning and error are set to 0 during back propagation.
+#' @param seq_to_seq_unsync if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning, error are set to 0 during back propagation, input for the second part is also set to 0.
 #' @param epoch_function vector of functions to applied at each epoch loop. Use it to intereact with the objects inside the list model or to print and plot at each epoch. Should return the model.
 #' @param loss_function loss function, applied in each sample loop, vocabulary to verify.
 #' @param ... Arguments to be passed to methods, to be used in user defined functions
@@ -98,7 +97,7 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$sigmoid                 = sigmoid
   model$network_type            = network_type
   model$numepochs               = numepochs
-  model$batch_size               = batch_size
+  model$batch_size              = batch_size
   model$learningrate            = learningrate
   model$learningrate_decay      = learningrate_decay ## this one should be in the ... arg and be here initially but he was supply before
   model$momentum                = momentum
@@ -117,6 +116,11 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   
   if(seq_to_seq_unsync){ ## this will work for the training, we need something to make in work for the predictr
     model$time_dim_input = time_dim_input
+  }
+  
+  if(model$update_rule == "adagrad"){
+    message("adagrad update, loss function not used and momentum set to 0")
+    model$momentum = 0
   }
   
   model <- init_r(model)
@@ -155,7 +159,9 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
       model = backprop_r(model,a,c,j)
       
       # apply the loss function, default is to apply L1 learning rate, vocabulary to verify.
-      model = model$loss_function(model)
+      if(model$update_rule == "sgd"){
+        model = model$loss_function(model)
+      }
       
       # Applying the update
       model = update_r(model)

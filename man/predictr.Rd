@@ -13,7 +13,7 @@ predictr(model, X, hidden = FALSE, real_output = T, ...)
 
 \item{hidden}{should the function output the hidden units states}
 
-\item{real_output}{option used when the function in called inside trainr, do not drop factor for 2 dimension array output}
+\item{real_output}{option used when the function in called inside trainr, do not drop factor for 2 dimension array output and other actions. Let it to TRUE, the default, to let the function take care of the data.}
 
 \item{...}{arguments to pass on to sigmoid function}
 }
