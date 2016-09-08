@@ -36,7 +36,7 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{seq_to_seq_unsync}{if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning, error are set to 0 during back propagation, input for the second part is also set to 0.}
 
-\item{update_rule}{rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "adagrad" (experimentale)}
+\item{update_rule}{rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "adagrad" (experimentale, do not learn yet)}
 
 \item{epoch_function}{vector of functions to applied at each epoch loop. Use it to intereact with the objects inside the list model or to print and plot at each epoch. Should return the model.}
 
