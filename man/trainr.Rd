@@ -7,8 +7,9 @@
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), network_type = "rnn", numepochs = 1,
   sigmoid = c("logistic", "Gompertz", "tanh"), start_from_end = FALSE,
-  use_bias = F, batch_size = 1, epoch_function = c(epoch_print),
-  epoch_model_function = c(epoch_annealing), loss_function = loss_L1, ...)
+  use_bias = F, batch_size = 1, seq_to_seq_unsync = F,
+  update_rule = "sgd", epoch_function = c(epoch_print, epoch_annealing),
+  loss_function = loss_L1, ...)
 }
 \arguments{
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
@@ -23,23 +24,23 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 
 \item{hidden_dim}{dimension(s) of hidden layer(s)}
 
-\item{network_type}{type of network, could be rnn or lstm, only rnn supported for the moment}
+\item{network_type}{type of network, could be rnn, gru or lstm. gru and lstm are experimentale.}
 
 \item{numepochs}{number of iteration, i.e. number of time the whole dataset is presented to the network}
 
 \item{sigmoid}{method to be passed to the sigmoid function}
 
-\item{start_from_end}{should the sequence start from the end, legacy of the binary example. DEPRECATED, first index is the begining}
-
 \item{use_bias}{should the network use bias}
 
 \item{batch_size}{batch size: number of samples used at each weight iteration, only 1 supported for the moment}
 
-\item{epoch_function}{vector of functions with no side effect on the model to applied at each epoch loop}
+\item{seq_to_seq_unsync}{if TRUE, the network will be trained to backpropagate only the second half of the output error. If many to one is the target, just make Y have a time dim of 1. The X and Y data are modify at first to fit a classic learning, error are set to 0 during back propagation, input for the second part is also set to 0.}
 
-\item{epoch_model_function}{vector of functions with side effect on the model to applied at each epoch loop}
+\item{update_rule}{rule to update the weight, "sgd", the default, is stochastic gradient descent, other available options are "adagrad" (experimentale)}
 
-\item{loss_function}{loss function, applied in each sample loop, vocabulary to verify}
+\item{epoch_function}{vector of functions to applied at each epoch loop. Use it to intereact with the objects inside the list model or to print and plot at each epoch. Should return the model.}
+
+\item{loss_function}{loss function, applied in each sample loop, vocabulary to verify.}
 
 \item{...}{Arguments to be passed to methods, to be used in user defined functions}
 }

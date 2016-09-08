@@ -95,8 +95,7 @@ model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F], # we inverse the time dimension
                 learningrate   =  0.1,
                 hidden_dim     = 10,
                 batch_size = 100,
-                numepochs = 10,
-                start_from_end = TRUE )
+                numepochs = 10)
 ```
 
 See the evolution of the error over different epochs:

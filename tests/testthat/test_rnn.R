@@ -8,6 +8,27 @@ X2 = sample(0:127, 7000, replace=TRUE)
 # create training response numbers
 Y <- X1 + X2
 
+# function int2bin and bin2int
+int2bin <- function(integer, length=8) {
+  t(sapply(integer, i2b, length=length))
+}
+
+i2b <- function(integer, length=8){
+  rev(as.numeric(intToBits(integer))[1:length])
+}
+
+bin2int <- function(binary){
+  # round
+  binary <- round(binary)
+  # determine length of binary representation
+  length <- dim(binary)[2]
+  # apply to full matrix
+  apply(binary, 1, b2i)
+}
+
+b2i <- function(binary)
+  packBits(as.raw(rev(c(rep(0, 32-length(binary) ), binary))), 'integer')
+
 # convert to binary
 X1 <- int2bin(X1)
 X2 <- int2bin(X2)
@@ -24,10 +45,9 @@ model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F],
                 hidden_dim     =  c(10,10),
                 numepochs      =  5,
                 batch_size     = 100,
-                # momentum       =0.5,
+                momentum       =0,
                 use_bias       = F,
-                learningrate_decay = 1,
-                start_from_end = TRUE)
+                learningrate_decay = 1)
 
 set.seed(1) # need a new seed as RNG as moved during trainr because of bias generation, in order to compare before after the bias implementation
 

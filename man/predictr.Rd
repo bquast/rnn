@@ -13,7 +13,7 @@ predictr(model, X, hidden = FALSE, real_output = T, ...)
 
 \item{hidden}{should the function output the hidden units states}
 
-\item{real_output}{option used when the function in called inside trainr, do not drop factor for 2 dimension array output}
+\item{real_output}{option used when the function in called inside trainr, do not drop factor for 2 dimension array output and other actions. Let it to TRUE, the default, to let the function take care of the data.}
 
 \item{...}{arguments to pass on to sigmoid function}
 }
@@ -40,11 +40,11 @@ Y  <- int2bin(Y)
 X <- array( c(X1,X2), dim=c(dim(X1),2) )
 
 # train the model
-model <- trainr(Y=Y,
-                X=X,
+model <- trainr(Y=Y[,dim(Y)[2]:1],
+                X=X[,dim(X)[2]:1,],
                 learningrate   =  0.1,
-                hidden_dim     = 10,
-                start_from_end = TRUE )
+                hidden_dim     = 10
+                )
              
 # create test inputs
 A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
@@ -55,8 +55,8 @@ A <- array( c(A1,A2), dim=c(dim(A1),2) )
     
 # predict
 B  <- predictr(model,
-               A     )
- 
+               A[,dim(A)[2]:1,]     )
+B = B[,dim(B)[2]:1]
 # convert back to integers
 A1 <- bin2int(A1)
 A2 <- bin2int(A2)
@@ -67,6 +67,7 @@ table( B-(A1+A2) )
 
 # plot the difference
 hist(  B-(A1+A2) )
+
 
 }
 

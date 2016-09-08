@@ -1,5 +1,4 @@
 #' @name clean_r
-#' @export
 #' @title init_r
 #' @description Initialize the weight parameters
 #' @param model the output model object
@@ -8,13 +7,14 @@
 clean_r = function(model){
   if(model$network_type == "rnn"){
     clean_rnn(model)
+  } else if (model$network_type == "lstm" | model$network_type == "gru" ){
+    clean_lstm(model)
   }else{
-    stop("only rnn supported for the moment")
+    stop("network_type_unknown for the cleaning")
   }
 }
 
 #' @name clean_rnn
-#' @export
 #' @title clean_rnn
 #' @description clean the model for lighter output
 #' @param model the output model object
@@ -29,3 +29,16 @@ clean_rnn = function(model){
   
   return(model)
 }
+
+#' @name clean_lstm
+#' @title clean_lstm
+#' @description clean the model for lighter output
+#' @param model the output model object
+#' @return the updated model
+
+clean_lstm = function(model){
+  
+  return(model)
+}
+
+
