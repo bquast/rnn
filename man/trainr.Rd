@@ -6,10 +6,10 @@
 \usage{
 trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
   hidden_dim = c(10), network_type = "rnn", numepochs = 1,
-  sigmoid = c("logistic", "Gompertz", "tanh"), start_from_end = FALSE,
-  use_bias = F, batch_size = 1, seq_to_seq_unsync = F,
-  update_rule = "sgd", epoch_function = c(epoch_print, epoch_annealing),
-  loss_function = loss_L1, ...)
+  sigmoid = c("logistic", "Gompertz", "tanh"), use_bias = F,
+  batch_size = 1, seq_to_seq_unsync = F, update_rule = "sgd",
+  epoch_function = c(epoch_print, epoch_annealing), loss_function = loss_L1,
+  ...)
 }
 \arguments{
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
@@ -70,8 +70,7 @@ X <- array( c(X1,X2), dim=c(dim(X1),2) )
 model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
-                hidden_dim     = 10,
-                start_from_end = TRUE )
+                hidden_dim     = 10   )
     
 }
 

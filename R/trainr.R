@@ -41,12 +41,11 @@
 #' model <- trainr(Y=Y,
 #'                 X=X,
 #'                 learningrate   =  0.1,
-#'                 hidden_dim     = 10,
-#'                 start_from_end = TRUE )
+#'                 hidden_dim     = 10   )
 #'     
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",
-                   numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), start_from_end=FALSE, use_bias = F, batch_size = 1,
+                   numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), use_bias = F, batch_size = 1,
                    seq_to_seq_unsync=F,update_rule = "sgd",
                    epoch_function = c(epoch_print,epoch_annealing),
                    loss_function = loss_L1,...) {
@@ -104,7 +103,6 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   model$update_rule             = update_rule
   model$use_bias                = use_bias
   model$seq_to_seq_unsync       = seq_to_seq_unsync
-  model$start_from_end          = start_from_end
   model$epoch_function          = epoch_function
   model$loss_function           = loss_function
   model$last_layer_error        = Y*0
