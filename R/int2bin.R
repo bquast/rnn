@@ -13,6 +13,6 @@ int2bin <- function(integer, length=8) {
 #' @describeIn int2bin individual Integer to Binary
 
 i2b <- function(integer, length=8){
-  rev(as.numeric(intToBits(integer))[1:length])
+  as.numeric(intToBits(integer))[1:length]
 }
 
