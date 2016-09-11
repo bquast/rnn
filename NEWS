@@ -1,3 +1,13 @@
+rnn 0.8.0
+===============
+
+* add LSTM
+
+* add GRU
+
+* complete code refactoring
+
+
 rnn 0.7.0
 ===============
 
