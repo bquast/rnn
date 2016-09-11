@@ -2,9 +2,11 @@
 title: "GRU units"
 author: "Dimitri Fichou"
 date: '`r Sys.Date()`'
-output: pdf_document
-vignette: |
-  %\VignetteIndexEntry{Recurrent Neural Network} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GRU units}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 
