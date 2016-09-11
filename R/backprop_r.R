@@ -85,6 +85,7 @@ backprop_rnn = function(model,a,c,j,...){
 #' @name backprop_lstm
 #' @title backprop_lstm
 #' @description backpropagate the error in a model object of type rlstm
+#' @importFrom sigmoid tanh_output_to_derivative
 #' @param model the output model object
 #' @param a the input of this learning batch
 #' @param c the output of this learning batch
@@ -251,6 +252,7 @@ backprop_lstm = function(model,a,c,j,...){
 #' @name backprop_gru
 #' @title backprop_gru
 #' @description backpropagate the error in a model object of type gru
+#' @importFrom sigmoid tanh_output_to_derivative
 #' @param model the output model object
 #' @param a the input of this learning batch
 #' @param c the output of this learning batch
