@@ -51,6 +51,7 @@ a model to be used by the predictr function
 Trains a Recurrent Neural Network.
 }
 \examples{
+\dontrun{
 # create training numbers
 X1 = sample(0:127, 7000, replace=TRUE)
 X2 = sample(0:127, 7000, replace=TRUE)
@@ -71,6 +72,7 @@ model <- trainr(Y=Y,
                 X=X,
                 learningrate   =  0.1,
                 hidden_dim     = 10   )
+}
     
 }
 

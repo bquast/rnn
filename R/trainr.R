@@ -22,6 +22,7 @@
 #' @param ... Arguments to be passed to methods, to be used in user defined functions
 #' @return a model to be used by the predictr function
 #' @examples 
+#' \dontrun{
 #' # create training numbers
 #' X1 = sample(0:127, 7000, replace=TRUE)
 #' X2 = sample(0:127, 7000, replace=TRUE)
@@ -42,6 +43,7 @@
 #'                 X=X,
 #'                 learningrate   =  0.1,
 #'                 hidden_dim     = 10   )
+#' }
 #'     
 
 trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",

@@ -10,7 +10,8 @@
 #' @param real_output option used when the function in called inside trainr, do not drop factor for 2 dimension array output and other actions. Let it to TRUE, the default, to let the function take care of the data.
 #' @param ... arguments to pass on to sigmoid function
 #' @return array or matrix of predicted values
-#' @examples 
+#' @examples
+#' \dontrun{ 
 #' # create training numbers
 #' X1 = sample(0:127, 7000, replace=TRUE)
 #' X2 = sample(0:127, 7000, replace=TRUE)
@@ -54,7 +55,7 @@
 #' 
 #' # plot the difference
 #' hist(  B-(A1+A2) )
-#' 
+#' }
 #' 
 predictr = function(model, X, hidden = FALSE, real_output = T,...){
   

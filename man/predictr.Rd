@@ -24,6 +24,7 @@ array or matrix of predicted values
 predict the output of a RNN model
 }
 \examples{
+\dontrun{ 
 # create training numbers
 X1 = sample(0:127, 7000, replace=TRUE)
 X2 = sample(0:127, 7000, replace=TRUE)
@@ -67,7 +68,7 @@ table( B-(A1+A2) )
 
 # plot the difference
 hist(  B-(A1+A2) )
-
+}
 
 }
 
