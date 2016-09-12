@@ -49,6 +49,7 @@ model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F],
                 use_bias       = F,
                 learningrate_decay = 1)
 
+
 set.seed(1) # need a new seed as RNG as moved during trainr because of bias generation, in order to compare before after the bias implementation
 
 # create test inputs
