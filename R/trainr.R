@@ -6,6 +6,7 @@
 #' @description Trains a Recurrent Neural Network.
 #' @param Y array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
 #' @param X array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)
+#' @param model  a model trained before, used for retraining purpose.
 #' @param learningrate learning rate to be applied for weight iteration
 #' @param numepochs number of iteration, i.e. number of time the whole dataset is presented to the network
 #' @param hidden_dim dimension(s) of hidden layer(s)
@@ -46,7 +47,7 @@
 #' }
 #'     
 
-trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",
+trainr <- function(Y, X, model = NULL,learningrate, learningrate_decay = 1, momentum = 0, hidden_dim = c(10),network_type = "rnn",
                    numepochs = 1, sigmoid = c('logistic', 'Gompertz', 'tanh'), use_bias = F, batch_size = 1,
                    seq_to_seq_unsync=F,update_rule = "sgd",
                    epoch_function = c(epoch_print,epoch_annealing),
@@ -88,45 +89,65 @@ trainr <- function(Y, X, learningrate, learningrate_decay = 1, momentum = 0, hid
   #   Y <- Y[,dim(X)[2]:1,,drop = F]
   # }
   
-  # initialize the model list
-  model                         = list(...) # we start by the ... argument before appending everybody else
-  model$input_dim               = dim(X)[3]
-  model$hidden_dim              = hidden_dim
-  model$output_dim              = dim(Y)[3]
-  model$synapse_dim             = c(model$input_dim,model$hidden_dim,model$output_dim)
-  model$time_dim                = dim(X)[2] ## changed from binary_dim to get rid of the binary user case legacy
-  model$sigmoid                 = sigmoid
-  model$network_type            = network_type
-  model$numepochs               = numepochs
-  model$batch_size              = batch_size
-  model$learningrate            = learningrate
-  model$learningrate_decay      = learningrate_decay ## this one should be in the ... arg and be here initially but he was supply before
-  model$momentum                = momentum
-  model$update_rule             = update_rule
-  model$use_bias                = use_bias
-  model$seq_to_seq_unsync       = seq_to_seq_unsync
-  model$epoch_function          = epoch_function
-  model$loss_function           = loss_function
-  model$last_layer_error        = Y*0
-  model$last_layer_delta        = Y*0
-  
-  if("epoch_model_function" %in% names(model)){
-    stop("epoch_model_function is not used anymore, use opech_function and return the model inside.")
+  if(is.null(model)){
+    # initialize the model list
+    model                         = list(...) # we start by the ... argument before appending everybody else
+    model$input_dim               = dim(X)[3]
+    model$hidden_dim              = hidden_dim
+    model$output_dim              = dim(Y)[3]
+    model$synapse_dim             = c(model$input_dim,model$hidden_dim,model$output_dim)
+    model$time_dim                = dim(X)[2] ## changed from binary_dim to get rid of the binary user case legacy
+    model$sigmoid                 = sigmoid
+    model$network_type            = network_type
+    model$numepochs               = numepochs
+    model$batch_size              = batch_size
+    model$learningrate            = learningrate
+    model$learningrate_decay      = learningrate_decay ## this one should be in the ... arg and be here initially but he was supply before
+    model$momentum                = momentum
+    model$update_rule             = update_rule
+    model$use_bias                = use_bias
+    model$seq_to_seq_unsync       = seq_to_seq_unsync
+    model$epoch_function          = epoch_function
+    model$loss_function           = loss_function
+    model$last_layer_error        = Y*0
+    model$last_layer_delta        = Y*0
+    
+    if("epoch_model_function" %in% names(model)){
+      stop("epoch_model_function is not used anymore, use epoch_function and return the model inside.")
+    }
+    
+    if(seq_to_seq_unsync){ ## this will work for the training, we need something to make in work for the predictr
+      model$time_dim_input = time_dim_input
+    }
+    
+    if(model$update_rule == "adagrad"){
+      message("adagrad update, loss function not used and momentum set to 0")
+      model$momentum = 0
+    }
+    
+    model <- init_r(model)
+    
+    # Storing errors, dim 1: samples, dim 2 is epochs, we could store also the time and variable dimension
+    model$error <- array(0,dim = c(dim(Y)[1],model$numepochs))
+  }else{
+    message("retraining, all options except X, Y and the model itself are ignored, error are reseted")
+    if(model$input_dim != dim(X)[3]){
+      stop("input dim changed")
+    }
+    if(model$time_dim != dim(X)[2]){
+      stop("time dim changed")
+    }
+    if(model$output_dim != dim(Y)[3]){
+      stop("output dim changed")
+    }
+    if(seq_to_seq_unsync && model$time_dim_input != time_dim_input){ ## this will work for the training, we need something to make in work for the predictr
+      stop("time input dim changed")
+    }
+    
+    # Storing errors, dim 1: samples, dim 2 is epochs, we could store also the time and variable dimension
+    model$error <- array(0,dim = c(dim(Y)[1],model$numepochs))
   }
   
-  if(seq_to_seq_unsync){ ## this will work for the training, we need something to make in work for the predictr
-    model$time_dim_input = time_dim_input
-  }
-  
-  if(model$update_rule == "adagrad"){
-    message("adagrad update, loss function not used and momentum set to 0")
-    model$momentum = 0
-  }
-  
-  model <- init_r(model)
-  
-  # Storing errors, dim 1: samples, dim 2 is epochs, we could store also the time and variable dimension
-  model$error <- array(0,dim = c(dim(Y)[1],model$numepochs))
   
   # training logic
   for(epoch in seq(model$numepochs)){

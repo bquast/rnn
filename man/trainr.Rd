@@ -4,8 +4,8 @@
 \alias{trainr}
 \title{Recurrent Neural Network}
 \usage{
-trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
-  hidden_dim = c(10), network_type = "rnn", numepochs = 1,
+trainr(Y, X, model = NULL, learningrate, learningrate_decay = 1,
+  momentum = 0, hidden_dim = c(10), network_type = "rnn", numepochs = 1,
   sigmoid = c("logistic", "Gompertz", "tanh"), use_bias = F,
   batch_size = 1, seq_to_seq_unsync = F, update_rule = "sgd",
   epoch_function = c(epoch_print, epoch_annealing), loss_function = loss_L1,
@@ -15,6 +15,8 @@ trainr(Y, X, learningrate, learningrate_decay = 1, momentum = 0,
 \item{Y}{array of output values, dim 1: samples (must be equal to dim 1 of X), dim 2: time (must be equal to dim 2 of X), dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
 
 \item{X}{array of input values, dim 1: samples, dim 2: time, dim 3: variables (could be 1 or more, if a matrix, will be coerce to array)}
+
+\item{model}{a model trained before, used for retraining purpose.}
 
 \item{learningrate}{learning rate to be applied for weight iteration}
 
