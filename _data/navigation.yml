@@ -2,6 +2,9 @@
 main:
   - title: "Quick-Start Quide"
     url: /docs/quick-start-guide/
+    
+  - title: "Interactive Demo"
+    url: /demo/
 
   - title: "FAQ"
     url: /faq/
