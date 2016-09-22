@@ -1,0 +1,94 @@
+---
+title: Morocco
+permalink: morocco
+---
+
+we use the data from the Initiative Nationale du Development Humaine (INDH) a development project in Morocco.
+The data is included with the `rddtools` package under the name `indh`.
+
+We start by loading the package.
+
+```{r library}
+library(rddtools)
+```
+
+We can now load the included data set.
+
+```{r data}
+data("indh")
+```
+
+Now that we have loading the data we can briefly inspect the structure of the data
+
+```{r inspect}
+str(indh)
+```
+
+The `indh` object is a `data.frame` containing 720 observations (representing individuals) of two variables:
+
+- `choice_pg`
+- `poverty`
+
+The variable of interest is `choice_pg`, which represent the decision to contibute to a public good or not.
+The observations are individuals choosing to contribute or not, these individuals are clustered by the variable `poverty` which is the municiple structure at which funding was distributed as part of the INDH project.
+The forcing variable is `poverty` which represents the number of households in a commune living below the poverty threshold.
+As part of the INDH, commune with a proportion of household below the poverty threshhold greater than 30% were allowed to distribute the funding using a **Community Driven Development** scheme.
+The cutoff point for our analysis is therefore `30`.
+
+We can now transform the `data.frame` to a special `rdd_data` `data.frame` using the `rdd_data()` function.
+
+```{r rdd_data}
+rdd_dat_indh <- rdd_data(y=choice_pg,
+                         x=poverty,
+                         data=indh,
+                         cutpoint=30 )
+```
+
+The structure is similar but contains some additional information.
+
+```{r inspect-rdd_data}
+str(rdd_dat_indh)
+```
+
+In order to best understand our data, we start with an exploratory data analysis using tables...
+
+```{r summary}
+summary(rdd_dat_indh)
+```
+
+...and plots.
+
+```{r plot}
+plot(rdd_dat_indh[1:715,])
+```
+
+We can now continue with a standard Regression Discontinuity Design (RDD) estimation.
+
+```{r reg_para}
+(reg_para <- rdd_reg_lm(rdd_dat_indh, order=4))
+```
+
+and visualising this estimation.
+
+```{r plot-reg_para}
+plot(reg_para)
+```
+
+In addition to the parametric estimation, we can also perform a non-parametric estimation.
+
+```{r reg_nonpara}
+bw_ik <- rdd_bw_ik(rdd_dat_indh)
+(reg_nonpara <- rdd_reg_np(rdd_object=rdd_dat_indh, bw=bw_ik))
+```
+
+and visualising the non-parametric estimation.
+
+```{r plot-reg_non_para}
+plot(reg_nonpara)
+```
+
+Sensitivity tests.
+
+```{r plotSensi}
+plotSensi(reg_nonpara, from=0.05, to=1, by=0.1)
+```
