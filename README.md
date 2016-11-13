@@ -5,6 +5,7 @@ rnn
 [![RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
 [![Travis-CI Build Status](https://travis-ci.org/bquast/rnn.png?branch=master)](https://travis-ci.org/bquast/rnn)
 [![Coverage Status](https://coveralls.io/repos/bquast/rnn/badge.svg?branch=master)](https://coveralls.io/r/bquast/rnn?branch=master)
+[![License](http://img.shields.io/badge/license-GPLv3-brightgreen.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 Implementation of a Recurrent Neural Network in R.
 
