@@ -19,4 +19,4 @@ bin2int <- function(binary){
 #' @describeIn bin2int individual Binary to Integer
 
 b2i <- function(binary)
-  packBits(as.raw(c(rep(0, 32-length(binary) ), binary)), 'integer')
+  packBits(as.raw(c(binary, rep(0, 32-length(binary) ))), 'integer')
