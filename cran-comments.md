@@ -1,9 +1,6 @@
 ## Test environments
-* local OS X install, R 3.3.1
-* Fedora 24 install, R 3.3.1
-* ubuntu 12.04 (on Travis-CI), R 3.3.1
-* win-builder (dev and release)
+* Linux (Arch) install, R 3.3.1
+* Ubuntu 12.04 (on Travis-CI), R 3.5.0
+* win-builder
 
-## R CMD check results
-* DONE
-Status: OK
+One note on not using canonical form URL, but I am linking to the vignette, not the package page.

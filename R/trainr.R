@@ -25,8 +25,8 @@
 #' @examples 
 #' \dontrun{
 #' # create training numbers
-#' X1 = sample(0:127, 7000, replace=TRUE)
-#' X2 = sample(0:127, 7000, replace=TRUE)
+#' X1 = sample(0:127, 10000, replace=TRUE)
+#' X2 = sample(0:127, 10000, replace=TRUE)
 #' 
 #' # create training response numbers
 #' Y <- X1 + X2
@@ -42,8 +42,8 @@
 #' # train the model
 #' model <- trainr(Y=Y,
 #'                 X=X,
-#'                 learningrate   =  0.1,
-#'                 hidden_dim     = 10   )
+#'                 learningrate   =  1,
+#'                 hidden_dim     = 16  )
 #' }
 #'     
 
