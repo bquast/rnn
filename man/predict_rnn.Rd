@@ -23,4 +23,3 @@ array or matrix of predicted values
 \description{
 predict the output of a RNN model
 }
-

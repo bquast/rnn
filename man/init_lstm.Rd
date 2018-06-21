@@ -15,4 +15,3 @@ the updated model
 \description{
 Initialize the weight parameter for a lstm
 }
-

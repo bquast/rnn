@@ -20,4 +20,3 @@ run.rnn_demo()
 \author{
 Dimitri Fichou
 }
-

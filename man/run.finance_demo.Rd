@@ -20,4 +20,3 @@ run.finance_demo()
 \author{
 Dimitri Fichou
 }
-

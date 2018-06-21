@@ -15,4 +15,3 @@ the updated model
 \description{
 Apply the learning rate to the weight update, vocabulary to verify !!
 }
-

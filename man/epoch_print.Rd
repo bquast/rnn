@@ -15,4 +15,3 @@ nothing
 \description{
 Print the error adn learning rate at each epoch of the trainr learning, called in epoch_function
 }
-

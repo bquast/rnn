@@ -23,4 +23,3 @@ the updated model
 \description{
 backpropagate the error in a model object of type gru
 }
-
