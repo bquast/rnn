@@ -3,34 +3,35 @@ layout: splash
 permalink: /
 header:
   overlay_color: "#5e616c"
-#  overlay_image: mm-home-page-feature.jpg
-  caption:
-excerpt: 'Recurrent Neural Networks in R.<br /><br /> {::nomarkdown}<iframe style="display: inline-block;" src="https://ghbtns.com/github-btn.html?user=bquast&repo=rnn&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe> <iframe style="display: inline-block;" src="https://ghbtns.com/github-btn.html?user=bquast&repo=rnn&type=fork&count=true&size=large" frameborder="0" scrolling="0" width="158px" height="30px"></iframe>{:/nomarkdown}'
+  overlay_image: /assets/images/background.png
+  actions:
+    - label: "<i class='fas fa-download'></i> Install now"
+      url: "/docs/quick-start-guide/"
+excerpt: >
+  Flexible native R implementations of Recurrent Neural Network architectures.<br />
+  <small><a href="https://cran.r-project.org/package=rnn">Latest release v0.8.1</a></small>
 feature_row:
-  - image_path: mm-customizable-feature.png
-    alt: "customizable"
-    title: "Super Customizable"
-    excerpt: "Everything from the menus, sidebars, comments, and more can be configured or set with YAML Front Matter."
+  - image_path: /assets/images/mm-customizable-feature.png
+    alt: "flexible"
+    title: "Flexible"
+    excerpt: "Powerful defaults, with a very flexible implementation."
     url: "/docs/configuration/"
-    btn_label: "Learn More"
-  - image_path: mm-responsive-feature.png
-    alt: "fully responsive"
-    title: "Responsive Layouts"
-    excerpt: "Built on HTML5 + CSS3. All layouts are fully responsive with helpers to augment your content."
+    btn_class: "btn--primary"
+    btn_label: "Learn more"
+  - image_path: /assets/images/mm-responsive-feature.png
+    alt: "platform independent"
+    title: "Platform independent"
+    excerpt: "Written in native R, does not rely on C++ / Fortran / Java or anything else."
     url: "/docs/layouts/"
-    btn_label: "Learn More"
-  - image_path: mm-free-feature.png
+    btn_class: "btn--primary"
+    btn_label: "Learn more"
+  - image_path: /assets/images/mm-free-feature.png
     alt: "100% free"
-    title: "100% Free"
-    excerpt: "Free to use however you want under the MIT License. Clone it, fork it, customize it, whatever!"
+    title: "100% free"
+    excerpt: "Free to use however you want under the GPL v.3 license"
     url: "/docs/license/"
-    btn_label: "Learn More"
-github:
-  - excerpt: '{::nomarkdown}<iframe style="display: inline-block;" src="https://ghbtns.com/github-btn.html?user=mmistakes&repo=minimal-mistakes&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe> <iframe style="display: inline-block;" src="https://ghbtns.com/github-btn.html?user=mmistakes&repo=minimal-mistakes&type=fork&count=true&size=large" frameborder="0" scrolling="0" width="158px" height="30px"></iframe>{:/nomarkdown}'
-intro:
-  - excerpt: 'Get notified when the development version is updated. [RSS]'
+    btn_class: "btn--primary"
+    btn_label: "Learn more"      
 ---
-
-{% include feature_row id="intro" type="center" %}
 
 {% include feature_row %}
