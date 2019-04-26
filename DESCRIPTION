@@ -1,6 +1,6 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 0.8.1
+Version: 0.9.0
 Authors@R: c(person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre")),
              person("Dimitri", "Fichou", email = "dimitrifichou@gmail.com", role = "aut"))
 Description: Implementation of a Recurrent Neural Network in R.
