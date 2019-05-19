@@ -19,9 +19,6 @@ bin2int <- function(binary){
 b2i <- function(binary)
   packBits(as.raw(rev(c(rep(0, 32-length(binary) ), binary))), 'integer')
 
-# replicable
-set.seed(1)
-
 time_dim = 8
 
 # create training numbers

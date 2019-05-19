@@ -1,6 +1,3 @@
-# replicable
-set.seed(1)
-
 # create training numbers
 X1 = sample(0:127, 7000, replace=TRUE)
 X2 = sample(0:127, 7000, replace=TRUE)
@@ -49,9 +46,6 @@ model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F],
                 use_bias       = F,
                 learningrate_decay = 1)
 
-
-set.seed(1) # need a new seed as RNG as moved during trainr because of bias generation, in order to compare before after the bias implementation
-
 # create test inputs
 A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
 A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
@@ -66,5 +60,3 @@ B  <- predictr(model, A[,dim(A)[2]:1,,drop=F])[,dim(A)[2]:1]
 expect_equal(sum(bin2int(B)), 888626)
 # print(sum(bin2int(B)))
 # print(sum(bin2int(A1))+sum(bin2int(A2)))
-
-

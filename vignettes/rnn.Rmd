@@ -54,12 +54,6 @@ sigmoid::sigmoid_output_to_derivative
 
 # Application
 
-By setting a **seed** for the random number generator, we ensure replicability.
-
-```{r seed}
-set.seed(1)
-```
-
 An example is included in the help file.
 
 ```{r help, eval=FALSE}

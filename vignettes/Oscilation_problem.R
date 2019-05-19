@@ -1,6 +1,6 @@
 ## R script for oscillation LSTM test, not learning yet
 
-set.seed(1)
+# set.seed(1)
 
 sample_dim = 10000 # number of sampels
 time_dim = 10 # time dimension

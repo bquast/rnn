@@ -79,7 +79,6 @@ oscillationServer <- function(input, output,session) {
   
   train_set <- reactive({
     # replicable
-    set.seed(1)
     create_data_set(input$sample_dim_train, input$time_dim, variable_dim = 1, input$event_proba, input$simple_dataset)
   })
   

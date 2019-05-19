@@ -48,7 +48,6 @@ cosinusServer <- function(input, output,session) {
   
   train_set <- reactive({
     # replicable
-    set.seed(1)
     time_dim = input$time_dim
     sample_dim <- input$sample_dim_train
     X <- data.frame()

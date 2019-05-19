@@ -76,8 +76,6 @@ binaryServer <- function(input, output,session) {
   })
   
   train_set <- reactive({
-    # replicable
-    set.seed(1)
     time_dim = input$time_dim
     
     # create training numbers

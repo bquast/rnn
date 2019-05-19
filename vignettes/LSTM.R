@@ -1,5 +1,3 @@
-set.seed(1)
-
 # define some functions
 
 ## convert integer to binary
