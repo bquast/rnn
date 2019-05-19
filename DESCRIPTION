@@ -6,7 +6,7 @@ Authors@R: c(person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("a
 Description: Implementation of a Recurrent Neural Network in R.
 Depends: 
     R (>= 3.2.2)
-License: GPL-3
+License: GPL-3 + file LICENSE
 LazyData: true
 RoxygenNote: 6.1.1
 URL: http://qua.st/rnn, https://github.com/bquast/rnn
