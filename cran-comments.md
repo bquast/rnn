@@ -3,4 +3,9 @@
 * Ubuntu 12.04 (on Travis-CI), R 3.6.0
 * win-builder
 
-No comments
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Bastiaan Quast <bquast@gmail.com>'
+
+New submission
+
+Package was archived on CRAN
