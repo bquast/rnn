@@ -4,7 +4,7 @@ author: "Bastiaan Quast"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Recurrent Neural Network}
+  %\VignetteIndexEntry{Basic Recurrent Neural Network}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
