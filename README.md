@@ -42,7 +42,7 @@ help('predictr')
 help(package='rnn')
 ```
 
-There is also a long form [vignette](https://cran.r-project.org/package=rnn/vignettes/rnn.html) available using:
+There is also a long form vignette available using:
 
 ```r
 vignette('rnn')
