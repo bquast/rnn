@@ -8,4 +8,4 @@ Maintainer: 'Bastiaan Quast <bquast@gmail.com>'
 
 New submission
 
-Package was archived on CRAN
+Package was archived on CRAN, there is a note that mentions this
