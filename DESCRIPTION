@@ -3,7 +3,7 @@ Title: Recurrent Neural Network
 Version: 0.9.8
 Authors@R: c(person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre")),
              person("Dimitri", "Fichou", email = "dimitrifichou@gmail.com", role = "aut"))
-Description: Implementation of a Recurrent Neural Network architectures in native R, including Long Short-Term Memory (LSTM), Gated Recurrent Unit (GRU) and vanilla RNN.
+Description: Implementation of a Recurrent Neural Network architectures in native R, including Long Short-Term Memory (Hochreiter and Schmidhuber, https://doi.org/10.1162/neco.1997.9.8.1735), Gated Recurrent Unit (Chung et al., https://arxiv.org/abs/1412.3555) and vanilla RNN.
 Depends: 
     R (>= 3.2.2)
 License: GPL-3
