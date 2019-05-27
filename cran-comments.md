@@ -9,3 +9,10 @@ Maintainer: 'Bastiaan Quast <bquast@gmail.com>'
 New submission
 
 Package was archived on CRAN, there is a note that mentions this
+
+Possibly mis-spelled words in DESCRIPTION:
+  GRU (6:149)
+  LSTM (6:120)
+  RNN (6:166)
+  
+These "words" are abbreviations that are correct.
