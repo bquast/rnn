@@ -9,6 +9,11 @@ rnn
 
 Implementation of a Recurrent Neural Network in R.
 
+
+Demonstration
+---------------
+![rnn demonstration](/man/figures/rnn.gif)
+
 Installation
 ------------
 The **stable** version can be installed from [CRAN](https://cran.r-project.org/package=rnn) using:
