@@ -8,7 +8,7 @@ Depends:
     R (>= 3.2.2)
 License: GPL-3
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 URL: http://qua.st/rnn, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
