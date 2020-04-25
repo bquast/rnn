@@ -1,14 +1,21 @@
 ## Test environments
-* Linux (Arch) install, R 3.6.0
-* Ubuntu 12.04 (on Travis-CI), R 3.6.0
-* win-builder
 
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Bastiaan Quast <bquast@gmail.com>'
+- local Windows 10 install, R 4.0.0
+- local Linux (Arch) install, R 4.0.0
+- GitHub Actions
+   - Windows Server 2019 (10.0.17763)
+   - MacOS (10.15)
+   - Ubuntu (16.04) , R 4.0.0
+- win-builder
+   - devel
+   - release
 
-New submission
+── R CMD check results ──────────────────────────────────── diagonals 5.2.0 ────
+Duration: 12.4s
 
-Package was archived on CRAN, there is a note that mentions this
+0 errors ✓ | 0 warnings ✓ | 0 notes ✓
+
+R CMD check succeeded
 
 Possibly mis-spelled words in DESCRIPTION:
   GRU (6:149)
