@@ -1,6 +1,6 @@
 ^Meta$
 ^doc$
 ^.*\.Rproj$
+^.*\.github$
 ^\.Rproj\.user$
-^\.travis\.yml$
 ^cran-comments\.md$
