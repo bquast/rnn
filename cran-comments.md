@@ -10,11 +10,6 @@
    - devel
    - release
 
-── R CMD check results ──────────────────────────────────── diagonals 5.2.0 ────
-Duration: 12.4s
-
-0 errors ✓ | 0 warnings ✓ | 0 notes ✓
-
 R CMD check succeeded
 
 Possibly mis-spelled words in DESCRIPTION:
