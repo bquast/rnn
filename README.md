@@ -1,5 +1,6 @@
 rnn
-=======
+===
+
 [![License](http://img.shields.io/badge/license-GPLv3-brightgreen.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![CRAN Version](http://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
 [![R build status](https://github.com/bquast/rnn/workflows/R-CMD-check/badge.svg)](https://github.com/bquast/rnn/actions?workflow=R-CMD-check)
