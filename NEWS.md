@@ -1,3 +1,18 @@
+rnn 1.4.0
+===============
+
+* switch to GitHub Actions
+* switch to codecov
+* test on R 4.0.0
+
+
+rnn 1.2.0
+===============
+
+* redo documentation
+* cleanup README.md
+
+
 rnn 0.9.8
 ===============
 
