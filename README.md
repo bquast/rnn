@@ -72,7 +72,7 @@ Development
 -------------
 Development takes place on the GitHub page.
 
-https://github.com/rnn/
+https://github.com/bquast/rnn/
 
 Bugs can be filed on the issues page on GitHub.
 
