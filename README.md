@@ -2,11 +2,11 @@ rnn
 ===
 
 [![License](http://img.shields.io/badge/license-GPLv3-brightgreen.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![CRAN Version](http://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
+[![CRAN Version](https://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
 [![R build status](https://github.com/bquast/rnn/workflows/R-CMD-check/badge.svg)](https://github.com/bquast/rnn/actions?workflow=R-CMD-check)
-[![Coverage status](https://codecov.io/gh/bquast/rnn/branch/master/graph/badge.svg?token=bsdqgGdJNu)](https://codecov.io/gh/bquast/rnn)
-[![Total RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/grand-total/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
-[![RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
+[![Coverage status](https://codecov.io/gh/bquast/rnn/branch/master/graph/badge.svg?token=bsdqgGdJNu)](https://app.codecov.io/gh/bquast/rnn)
+[![Total RStudio Cloud Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
+[![RStudio Cloud Downloads](https://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
 
 Implementation of a Recurrent Neural Network in R.
 
