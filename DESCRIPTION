@@ -1,6 +1,6 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 1.4.0
+Version: 1.5.0
 Authors@R: c(person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre"), comment=c(ORCID="0000-0002-2951-3577") ),
              person("Dimitri", "Fichou", email = "dimitrifichou@gmail.com", role = "aut"))
 Description: Implementation of a Recurrent Neural Network architectures in native R, including Long Short-Term Memory (Hochreiter and Schmidhuber, <doi:10.1162/neco.1997.9.8.1735>), Gated Recurrent Unit (Chung et al., <arXiv:1412.3555>) and vanilla RNN.
@@ -8,8 +8,8 @@ Depends:
     R (>= 3.2.2)
 License: GPL-3
 LazyData: true
-RoxygenNote: 7.1.1
-URL: http://qua.st/rnn, https://github.com/bquast/rnn
+RoxygenNote: 7.1.2
+URL: http://qua.st/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
     sigmoid,
