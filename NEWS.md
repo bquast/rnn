@@ -1,3 +1,11 @@
+rnn 1.6.0
+===============
+
+* use sigmoid minimal 1.4.0
+* redo documentation
+* update HTTPS URL
+
+
 rnn 1.4.0
 ===============
 
