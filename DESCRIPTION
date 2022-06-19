@@ -13,7 +13,7 @@ Encoding: UTF-8
 URL: http://qua.st/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
-    sigmoid,
+    sigmoid (>= 1.4.0),
     shiny
 Suggests:
     testthat,
