@@ -10,7 +10,7 @@ License: GPL-3
 LazyData: true
 RoxygenNote: 7.2.0
 Encoding: UTF-8
-URL: http://qua.st/rnn/, https://github.com/bquast/rnn
+URL: https://qua.st/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
     sigmoid (>= 1.4.0),
