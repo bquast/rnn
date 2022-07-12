@@ -1,3 +1,10 @@
+rnn 1.8.0
+===============
+
+* use attention package for SoftMax
+* remove shinyapps
+
+
 rnn 1.6.0
 ===============
 
