@@ -14,8 +14,7 @@ URL: https://qua.st/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
     attention,
-    sigmoid (>= 1.4.0),
-    shiny
+    sigmoid (>= 1.4.0)
 Suggests:
     testthat,
     knitr,
