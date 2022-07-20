@@ -13,7 +13,7 @@ Implementation of a Recurrent Neural Network in R.
 
 Demonstration
 ------------
-![sigmoid demonstration](https://github.com/bquast/R-demo-GIFs/blob/master/sigmoid.gif)
+![rnn demonstration](https://github.com/bquast/R-demo-GIFs/blob/master/rnn.gif)
 
 
 
