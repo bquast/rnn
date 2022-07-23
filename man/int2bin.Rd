@@ -22,6 +22,6 @@ Integer to Binary
 }
 \section{Functions}{
 \itemize{
-\item \code{i2b}: individual Integer to Binary
-}}
+\item \code{i2b()}: individual Integer to Binary
 
+}}

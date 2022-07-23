@@ -20,6 +20,6 @@ Binary to Integer
 }
 \section{Functions}{
 \itemize{
-\item \code{b2i}: individual Binary to Integer
-}}
+\item \code{b2i()}: individual Binary to Integer
 
+}}
