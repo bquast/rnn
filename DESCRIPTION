@@ -1,6 +1,6 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 1.8.0.9000
+Version: 1.9.0
 Authors@R: 
     person("Bastiaan", "Quast", , "bquast@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2951-3577"))
