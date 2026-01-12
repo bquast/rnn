@@ -1,3 +1,10 @@
+rnn 1.9.1
+===============
+
+* minor cleanup
+* redo documentation
+
+
 rnn 1.8.0
 ===============
 
