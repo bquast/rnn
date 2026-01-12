@@ -1,6 +1,6 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 1.9.0
+Version: 1.9.1
 Authors@R: 
     person("Bastiaan", "Quast", , "bquast@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2951-3577"))
@@ -11,7 +11,7 @@ License: GPL-3
 LazyData: true
 RoxygenNote: 7.3.3
 Encoding: UTF-8
-URL: https://qua.st/rnn/, https://github.com/bquast/rnn
+URL: https://bastiaanquast/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
 Imports:
     attention,
