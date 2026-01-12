@@ -213,8 +213,6 @@ text(x = 1, y = 0, labels=c(expression(delta~"24")), pos=3,cex=0.8)
 
 To perform the BPTT with a GRU unit, we have the eror comming from the top layer ($\delta 1$), the future hidden states ($\delta 2$). Also, we have stored during the feed forward the states at each step of the feeding. In the case of the future layer, this error is just set to zero if not calculated yet. For convention, $\cdot$ correspond to point wise multiplication, while $*$ correspond to matrix multiplication.
 
-The rules on how to back prpagate come from [this post](http://practicalcryptography.com/miscellaneous/machine-learning/graphically-determining-backpropagation-equations/).
-
 $$\delta 3 = \delta 1 + \delta 2 $$
 
 $$\delta 4 = (1 - z_t) \cdot \delta 3 $$

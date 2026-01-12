@@ -65,9 +65,7 @@ An overview of the changes is available in the NEWS file.
 news(package='rnn')
 ```
 
-There is a dedicated website with information hosted on my [personal website](https://qua.st/).
-
-https://qua.st/rnn/
+There is a dedicated website with information hosted on my [personal website](https://bastiaanquast.com/).
 
 
 Development

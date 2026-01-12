@@ -16,7 +16,7 @@ library(rnn)
 library(attention)
 ```
 
-This vignette describes how to implement the [attention mechanism](https://en.m.wikipedia.org/wiki/Attention_(machine_learning)) - which forms the basis of [transformers](https://en.m.wikipedia.org/wiki/Transformer_(machine_learning_model)) - in the [R language](https://en.m.wikipedia.org/wiki/R_(programming_language)).
+This vignette describes how to implement the attention mechanism - which forms the basis of transformers - in the R language.
 
 We begin by generating encoder representations of four different words.
 ```{r}
@@ -50,7 +50,7 @@ W_K = matrix(floor(runif(9, min=0, max=3)),nrow=3,ncol=3)
 W_V = matrix(floor(runif(9, min=0, max=3)),nrow=3,ncol=3)
 ```
 
-Next, we generate the Queries (`Q`), Keys (`K`), and Values (`V`). The `%*%` operator performs the matrix multiplication. You can view the R help page using `help('%*%')` (or the online [An Introduction to R](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Multiplication)).
+Next, we generate the Queries (`Q`), Keys (`K`), and Values (`V`). The `%*%` operator performs the matrix multiplication. You can view the R help page using `help('%*%')`.
 ```{r}
 # generating the queries, keys and values
 Q = words %*% W_Q

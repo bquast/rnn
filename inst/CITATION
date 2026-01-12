@@ -5,7 +5,7 @@ bibentry(bibtype      = "Article",
 		     address      = "Maison de la paix, Geneva, Switzerland",
          year         = "2016",
          journal      = "Working Papers",
-         url          = "https://qua.st/rnn/",
+         url          = "https://bastiaanquast.com/rnn/",
          textVersion  = "Quast, B.A. (2016). rnn: a Recurrent Neural Network in R",
 		 
 		 
