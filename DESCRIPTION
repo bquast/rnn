@@ -9,7 +9,7 @@ Depends:
     R (>= 3.2.2)
 License: GPL-3
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 URL: https://qua.st/rnn/, https://github.com/bquast/rnn
 BugReports: https://github.com/bquast/rnn/issues
