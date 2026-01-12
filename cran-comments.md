@@ -11,18 +11,24 @@
 - win-builder
    - devel
    - release
-
-
-# R CMD check
    
-── R CMD check results ─────────────────────────────────────────────────────────────────────────────────── rnn 1.8.0 ────
-Duration: 2m 03.2s
+* using log directory 'd:/RCompile/CRANincoming/R-devel/rnn.Rcheck'
+* using R Under development (unstable) (2026-01-10 r89298 ucrt)
+* using platform: x86_64-w64-mingw32
+* R was compiled by
+    gcc.exe (GCC) 14.3.0
+    GNU Fortran (GCC) 14.3.0
+* running under: Windows Server 2022 x64 (build 20348)
+* using session charset: UTF-8
 
-0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+[...]
 
-R CMD check succeeded
+* checking CRAN incoming feasibility ... [53s] NOTE
+Maintainer: 'Bastiaan Quast <bquast@gmail.com>'
 
-# win-builder
-
-* DONE
-Status: OK
+Found the following (possibly) invalid URLs:
+  URL: https://www.gnu.org/licenses/gpl-3.0.html
+    From: README.md
+    Status: Error
+    Message: Timeout was reached [www.gnu.org]:
+      Failed to connect to www.gnu.org port 443 after 21133 ms: Could not connect to server
